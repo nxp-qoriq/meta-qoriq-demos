@@ -9,31 +9,38 @@ DEPENDS += "dtc-native"
 
 inherit deploy
 
-SRC_URI = "git://github.com/qoriq-open-source/mc-utils.git;nobranch=1"
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/dash/mc-utils.git;branch=master;protocol=https"
 SRCREV = "b79fe4b47364dfd2fe263f701ad6b818a75b036b"
 
 S = "${WORKDIR}/git"
 
 MC_CFG ?= ""
-MC_CFG_ls1088a = "ls1088a"
-MC_CFG_ls2088a = "ls2088a"
+MC_CFG_ls1088a = "ls1088a/RDB"
+MC_CFG_ls2088a = "ls2088a/RDB"
+MC_CFG_lx2160a = "lx2160a/sim"
 
 do_install () {
 	oe_runmake -C config 
 
-	install -d ${D}/boot/mc-utils/custom
-	cp -r ${S}/config/${MC_CFG}/RDB/*.dtb ${D}/boot/mc-utils
-        cp -r ${S}/config/${MC_CFG}/RDB/custom/*.dtb ${D}/boot/mc-utils/custom
+	install -d ${D}/boot/mc-utils
+	cp -r ${S}/config/${MC_CFG}/*.dtb ${D}/boot/mc-utils
+	if [ -e ${S}/config/${MC_CFG}/custom ]; then
+	    install -d ${D}/boot/mc-utils/custom
+	    cp -r ${S}/config/${MC_CFG}/custom/*.dtb ${D}/boot/mc-utils/custom
+	fi
 }
 
 do_deploy () {
-	install -d ${DEPLOYDIR}/mc-utils/custom
-	cp -r ${S}/config/${MC_CFG}/RDB/*.dtb ${DEPLOYDIR}/mc-utils
-        cp -r ${S}/config/${MC_CFG}/RDB/custom/*.dtb ${DEPLOYDIR}/mc-utils/custom
+	install -d ${DEPLOYDIR}/mc-utils
+	cp -r ${S}/config/${MC_CFG}/*.dtb ${DEPLOYDIR}/mc-utils
+	if [ -e ${S}/config/${MC_CFG}/custom ]; then
+	    install -d ${DEPLOYDIR}/mc-utils/custom
+	    cp -r ${S}/config/${MC_CFG}/custom/*.dtb ${DEPLOYDIR}/mc-utils/custom
+	fi
         
 }
 addtask deploy after do_install
 
 PACKAGES += "${PN}-image"
 FILES_${PN}-image += "/boot"
-COMPATIBLE_MACHINE = "(ls1088a|ls2088a)"
+COMPATIBLE_MACHINE = "(ls1088a|ls2088a|lx2160a)"
