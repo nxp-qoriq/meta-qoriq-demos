@@ -97,3 +97,6 @@ RDEPENDS_${PN}_append_ls2088a = " \
     fio \
     restool \
 "
+RDEPENDS_${PN}_append_lx2160a = " \
+    restool \
+"
