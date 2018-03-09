@@ -188,6 +188,7 @@ LAYER_LIST=" \
     meta-freescale \
     meta-freescale-distro \
     meta-qoriq-demos \
+    meta-fsl-local-build \
 "
 EULA_FILE="$FSLROOTDIR/EULA"
 
