@@ -98,5 +98,6 @@ RDEPENDS_${PN}_append_ls2088a = " \
     restool \
 "
 RDEPENDS_${PN}_append_lx2160a = " \
+    dpdk \
     restool \
 "
