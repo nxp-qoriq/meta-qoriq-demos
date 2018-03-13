@@ -9,7 +9,7 @@ DEPENDS += "dtc-native"
 
 inherit deploy
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/dash/mc-utils.git;branch=master;protocol=https"
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/dpaa2/mc-utils.git;branch=master;protocol=https"
 SRCREV = "b79fe4b47364dfd2fe263f701ad6b818a75b036b"
 
 S = "${WORKDIR}/git"
