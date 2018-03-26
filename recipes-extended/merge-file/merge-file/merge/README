@@ -1,0 +1,7 @@
+This package is used to merge specified files into rootfs.
+
+Steps:
+1> copy files to recipes-*/merge-file/merge-file/merge/
+2> add 'IMAGE_INSTALL += "merge-file"' into rootfs recipe
+3> bitbake <rootfs_image_type>
+
