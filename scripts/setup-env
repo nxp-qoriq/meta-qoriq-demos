@@ -76,6 +76,7 @@ You can now run 'bitbake <target>'
     fsl-image-minimal
     fsl-image-mfgtool
     fsl-image-core
+    fsl-image-kernelitb
     fsl-toolchain
 "
     echo "To return to this build environment later please run:"
@@ -99,7 +100,7 @@ usage() {
     echo -e "\n    Supported machines:
     `find ${ROOTDIR}/sources/meta-{fsl,freescale,qoriq-demos}*/conf/machine \
         -name *.conf 2>/dev/null \
-        |egrep "/(mpc|b4|bsc|c29|p1|p2|p3|p4|p5|t1|t2|t4|ls).*conf$" |sort \
+        |egrep "/(mpc|b4|bsc|c29|p1|p2|p3|p4|p5|t1|t2|t4|ls|lx).*conf$" |sort \
         |xargs echo |sed -e 's,[^ ]*/,,g;s,.conf,,g'`
 "
 
@@ -297,7 +298,6 @@ DL_DIR = "$DOWNLOADS"
 SSTATE_DIR = "$CACHES"
 INHERIT += "own-mirrors"
 SOURCE_MIRROR_URL ?= "http://git.freescale.com/source/"
-INITRAMFS_IMAGE = "fsl-image-core"
 EOF
 
 for s in $HOME/.oe $HOME/.yocto; do
