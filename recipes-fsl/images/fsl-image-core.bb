@@ -9,4 +9,5 @@ LICENSE = "MIT"
 
 IMAGE_INSTALL_append = " \
     packagegroup-fsl-tools-core \
+    packagegroup-fsl-networking-core \
 "
