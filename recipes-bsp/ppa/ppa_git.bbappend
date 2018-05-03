@@ -15,7 +15,7 @@ do_compile () {
     cd ${S}/ppa
     if [ ${MACHINE} = ls1012afrdm ];then
         ./build  frdm-fit ${PPA_PATH}
-    elif [ ${MACHINE} = lx2160ardb ] || [ ${MACHINE} = lx2160a-simu ];then
+    elif [ ${MACHINE} = lx2160ardb ] || [ ${MACHINE} = lx2160aqds ] || [ ${MACHINE} = lx2160a-simu ];then
         ./build  emu-fit ${PPA_PATH}
     else 
         ./build  rdb-fit ${PPA_PATH}
