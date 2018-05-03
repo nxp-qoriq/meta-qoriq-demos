@@ -1,1 +1,2 @@
+LIC_FILES_CHKSUM = "file://LICENSE;md5=45a017ee5f4cfe64b1cddf2eb06cffc7"
 SRCREV = "cbd5e66fcb850e821c8632578410ceba5733a49e"
