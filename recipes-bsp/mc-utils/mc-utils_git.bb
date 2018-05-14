@@ -9,15 +9,15 @@ DEPENDS += "dtc-native"
 
 inherit deploy
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/dpaa2/mc-utils.git;branch=master;protocol=https"
-SRCREV = "b79fe4b47364dfd2fe263f701ad6b818a75b036b"
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/dpaa2/mc-utils.git;branch=lx2_bringup;protocol=https"
+SRCREV = "ac11a820716911d78fc32f12d21660733e1f0faf"
 
 S = "${WORKDIR}/git"
 
 MC_CFG ?= ""
 MC_CFG_ls1088a = "ls1088a/RDB"
 MC_CFG_ls2088a = "ls2088a/RDB"
-MC_CFG_lx2160a = "lx2160a/sim"
+MC_CFG_lx2160a = "lx2160a"
 
 do_install () {
 	oe_runmake -C config 
