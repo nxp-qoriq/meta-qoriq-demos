@@ -14,10 +14,9 @@ PV = "2.9.0+fsl"
 SRC_URI = "git://bitbucket.sw.nxp.com/scm/sdk/qemu.git;branch=qemu-2.9;protocol=https \
            file://powerpc_rom.bin \
            file://run-ptest \
-           file://memfd.patch \
            "
 
-SRCREV = "6c297a7ddd355d499ddd31353a763d57a092f851"
+SRCREV = "798304eeb99ec1d2f8910275a3505f964a73c651"
 
 S = "${WORKDIR}/git"
 
