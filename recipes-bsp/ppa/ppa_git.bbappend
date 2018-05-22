@@ -1,5 +1,5 @@
 SRC_URI = "git://bitbucket.sw.nxp.com/scm/dnnpi/ppa-generic.git;branch=master;protocol=https"
-SRCREV = "9d5ecd29e1780aa4fd8a3e64bb84e3fc826c6738"
+SRCREV = "b0a07cfcc7d63c3d2e65843009a89bef1a10f4cf"
 
 PPA_PATH_ls1012a = "ls1012"
 PPA_PATH_ls1043a = "ls1043"
