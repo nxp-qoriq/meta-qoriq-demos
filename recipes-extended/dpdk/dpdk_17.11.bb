@@ -55,12 +55,6 @@ do_install() {
     install -m 0755 ${S}/examples/vhost/build/vhost-switch ${D}/${bindir}/dpdk-example/
     oe_runmake EXTRA_LDFLAGS="-L${STAGING_LIBDIR} --hash-style=gnu"  -C examples/cmdif
 
-    install -d 0644 ${D}/usr/share/dpdk/cmdif/include
-    install -d 0644 ${D}/usr/share/dpdk/cmdif/lib
-    cp examples/cmdif/lib/client/fsl_cmdif_client.h examples/cmdif/lib/server/fsl_cmdif_server.h \
-        examples/cmdif/lib/shbp/fsl_shbp.h      ${D}/usr/share/dpdk/cmdif/include
-    cp examples/cmdif/lib/${RTE_TARGET}/librte_cmdif.a ${D}/usr/share/dpdk/cmdif/lib
-
     install -m 0755 ${S}/${RTE_TARGET}/app/testpmd ${D}/${bindir}/dpdk-example/
     rm -fr ${D}/lib/modules/*
     install -d ${D}/lib/modules/${KERNEL_VERSION}/dpdk
@@ -68,6 +62,9 @@ do_install() {
     install -d ${D}/${bindir}/dpdk-example/extras
     cp -rf  ${S}/nxp/* ${D}/${bindir}/dpdk-example/extras/
     rm ${D}/${datadir}/${RTE_TARGET}/app/dpdk-pmdinfogen
+    rm -rf ${D}${datadir}/buildtools
+    rm -rf ${D}${datadir}/examples
+    rm -rf ${D}${datadir}/mk
 
     chown root:root -R ${D}
 }
