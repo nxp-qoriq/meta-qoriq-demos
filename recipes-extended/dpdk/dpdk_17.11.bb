@@ -9,10 +9,10 @@ RDEPENDS_${PN}-examples = "bash python-core"
 
 inherit module
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-next-qoriq;protocol=https \
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-qoriq;protocol=https \
     file://add-RTE_KERNELDIR_OUT-to-split-kernel-bu.patch \
 "
-SRCREV = "056f8f00752c902a347e930cc8c698c061d6fea6"
+SRCREV = "ff4d78de97869c74ca55ddf39fe0d9e889c8a408"
 
 S = "${WORKDIR}/git"
 
