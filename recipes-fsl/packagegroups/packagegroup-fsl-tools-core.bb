@@ -99,5 +99,7 @@ RDEPENDS_${PN}_append_ls2088a = " \
 "
 RDEPENDS_${PN}_append_lx2160a = " \
     dpdk \
+    gdbserver \
+    openssh-sftp-server \
     restool \
 "
