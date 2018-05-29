@@ -8,6 +8,7 @@ a USB stick or a hard drive."
 LICENSE = "MIT"
 
 IMAGE_INSTALL_append = " \
+    lmsensors-sensors \
     packagegroup-core-ssh-openssh \
     packagegroup-fsl-mfgtools \
 "
