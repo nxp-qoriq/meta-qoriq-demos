@@ -11,4 +11,5 @@ IMAGE_INSTALL_append = " \
     lmsensors-sensors \
     packagegroup-core-ssh-openssh \
     packagegroup-fsl-mfgtools \
+    restool \
 "
