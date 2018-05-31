@@ -76,6 +76,8 @@ You can now run 'bitbake <target>'
     fsl-image-minimal
     fsl-image-mfgtool
     fsl-image-core
+    fsl-image-virt
+    fsl-image-full
     fsl-image-kernelitb
     fsl-toolchain
 "
