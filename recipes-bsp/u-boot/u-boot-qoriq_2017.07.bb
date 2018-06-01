@@ -19,7 +19,7 @@ DEPENDS_append_qoriq-arm = " change-file-endianess-native dtc-native tcl-native"
 DEPENDS_append_qoriq-ppc = " boot-format-native"
 
 SRC_URI = "git://bitbucket.sw.nxp.com/scm/dnnpi/lx2-uboot.git;branch=lx2-devel;protocol=https"
-SRCREV = "e06eba61a72fbaba7c872acc3861d076a85c7111"
+SRCREV = "1ecda16e07ac7ea82a543444ae5793ca95f77350"
 
 S = "${WORKDIR}/git"
 
