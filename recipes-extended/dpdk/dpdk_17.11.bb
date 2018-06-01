@@ -9,16 +9,15 @@ RDEPENDS_${PN}-examples = "bash python-core"
 
 inherit module
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-lx2-qoriq;protocol=https \
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-qoriq;protocol=https \
     file://add-RTE_KERNELDIR_OUT-to-split-kernel-bu.patch \
 "
-SRCREV = "ff4d78de97869c74ca55ddf39fe0d9e889c8a408"
+SRCREV = "52acdc5b563cde1b54c1f1a5bce7645b51f133c3"
 
 S = "${WORKDIR}/git"
 
-DPAA_VER ?= "dpaa2"
-DPAA_VER_fsl-lsch2 = "dpaa"
-export RTE_TARGET = "${ARCH}-${DPAA_VER}-linuxapp-gcc"
+TARGET_NAME ?= "lx2"
+export RTE_TARGET = "${ARCH}-${TARGET_NAME}-linuxapp-gcc"
 
 EXTRA_OEMAKE += 'ARCH="${ARCH}" CROSS="${TARGET_PREFIX}" \
     CPU_CFLAGS="--sysroot=${STAGING_DIR_HOST}" RTE_SDK="${S}" \
@@ -97,4 +96,4 @@ FILES_${PN}-dev += "${datadir}/mk ${datadir}/scripts \
 FILES_${PN}-examples += "${datadir}/examples"
 
 FILES_${PN}-staticdev += "/usr/share/dpdk/cmdif/lib/*.a"
-COMPATIBLE_MACHINE = "(ls2080ardb|ls2084ardb|ls2088a|ls1043a|ls1046a|ls1088a|lx2160a)"
+COMPATIBLE_MACHINE = "(lx2160a)"
