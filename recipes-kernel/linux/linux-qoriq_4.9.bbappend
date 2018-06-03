@@ -1,5 +1,5 @@
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/dnnpi/lx2-linux.git;branch=lx2-devel;protocol=https"
-SRCREV = "93b53b177e675e7e2a5ac69a363937fa58251c9b"
+SRC_URI = "git://gitolite3@git.codeaurora.org:22/external/private_lx2160a/lx2-linux;nobranch=1;protocol=ssh"
+SRCREV = "3f4e0392e8ee409187176b54d7d992cbb20ba7a5"
 
 DELTA_KERNEL_DEFCONFIG_append_lx2160a-simu = " lx2simu.config"
 
