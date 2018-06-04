@@ -9,7 +9,7 @@ DEPENDS += "dtc-native"
 
 inherit deploy
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/dpaa2/mc-utils.git;branch=lx2_bringup;protocol=https"
+SRC_URI = "git://gitolite3@git.codeaurora.org:22/external/private_lx2160a/mc-utils;nobranch=1;protocol=ssh"
 SRCREV = "c7705fe7c949247263859b1aa9082923a93b636c"
 
 S = "${WORKDIR}/git"
