@@ -4,7 +4,7 @@ LIC_FILES_CHKSUM = "file://NXP-Binary-EULA.txt;md5=89cc852481956e861228286ac7430
 
 inherit deploy
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/dnnpi/ddr-phy-binary.git;branch=master;protocol=https"
+SRC_URI = "git://github.com/nxp/ddr-phy-binary.git;protocol=https;nobranch=1"
 SRCREV = "4081187e76c634366c09d8631f9739c80cc20366"
 
 S = "${WORKDIR}/git"
