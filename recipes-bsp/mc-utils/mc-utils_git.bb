@@ -10,7 +10,7 @@ DEPENDS += "dtc-native"
 inherit deploy
 
 SRC_URI = "git://gitolite3@git.codeaurora.org:22/external/private_lx2160a/mc-utils;nobranch=1;protocol=ssh"
-SRCREV = "c7705fe7c949247263859b1aa9082923a93b636c"
+SRCREV = "777c0024f207ca3e90b75b3e451841c29eadf55d"
 
 S = "${WORKDIR}/git"
 
