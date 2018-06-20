@@ -9,14 +9,14 @@ RDEPENDS_${PN}-examples = "bash python-core"
 
 inherit module
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-qoriq;protocol=https \
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-lx2-qoriq;protocol=https \
     file://add-RTE_KERNELDIR_OUT-to-split-kernel-bu.patch \
 "
-SRCREV = "52acdc5b563cde1b54c1f1a5bce7645b51f133c3"
+SRCREV = "90afdb61c1ba40834fff2ef002fb42cfe405dfff"
 
 S = "${WORKDIR}/git"
 
-TARGET_NAME ?= "lx2"
+TARGET_NAME ?= "dpaa2"
 export RTE_TARGET = "${ARCH}-${TARGET_NAME}-linuxapp-gcc"
 
 EXTRA_OEMAKE += 'ARCH="${ARCH}" CROSS="${TARGET_PREFIX}" \
