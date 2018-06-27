@@ -18,8 +18,8 @@ DEPENDS_append_qoriq-arm64 = " change-file-endianess-native dtc-native tcl-nativ
 DEPENDS_append_qoriq-arm = " change-file-endianess-native dtc-native tcl-native"
 DEPENDS_append_qoriq-ppc = " boot-format-native"
 
-SRC_URI = "git://gitolite3@git.codeaurora.org:22/external/private_lx2160a/lx2-uboot;nobranch=1;protocol=ssh"
-SRCREV = "9bc9cabf1aa54dd2a020dd701b0cc28744c6e8c7"
+SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/u-boot;nobranch=1"
+SRCREV = "9e0a009053da95938826d004308aba16f20d2275"
 
 S = "${WORKDIR}/git"
 

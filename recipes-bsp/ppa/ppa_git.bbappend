@@ -1,4 +1,4 @@
-SRC_URI = "git://gitolite3@git.codeaurora.org:22/external/private_lx2160a/ppa-generic;nobranch=1;protocol=ssh"
+SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/ppa-generic;nobranch=1"
 SRCREV = "b0a07cfcc7d63c3d2e65843009a89bef1a10f4cf"
 
 PPA_PATH_ls1012a = "ls1012"

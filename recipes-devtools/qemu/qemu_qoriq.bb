@@ -11,7 +11,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=441c28d2cf86e15a37fa47e15a72fbac \
 
 PV = "2.9.0+fsl"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/sdk/qemu.git;branch=qemu-2.9;protocol=https \
+SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/qemu;nobranch=1 \
            file://powerpc_rom.bin \
            file://run-ptest \
            "
