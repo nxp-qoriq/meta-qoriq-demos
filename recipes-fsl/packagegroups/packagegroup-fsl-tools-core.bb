@@ -104,3 +104,11 @@ RDEPENDS_${PN}_append_ls2088a = " \
 RDEPENDS_${PN}_append_ls2088ardb= " \
     dpdk \
 "
+RDEPENDS_${PN}_append_lx2160a = " \
+    devmem2 \
+    dpdk \
+    gdbserver \
+    glibc-utils \
+    openssh-sftp-server \
+    restool \
+"
