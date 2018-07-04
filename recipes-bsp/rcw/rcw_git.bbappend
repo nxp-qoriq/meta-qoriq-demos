@@ -1,3 +1,7 @@
+LIC_FILES_CHKSUM = "file://LICENSE;md5=45a017ee5f4cfe64b1cddf2eb06cffc7"
+
+SRCREV = "aad4c81394fd7e0b371c9e21280a3612c3cdd285"
+
 do_install () {
     if [ ${M} = ls2088ardb ]; then
         oe_runmake BOARDS=${M} DESTDIR=${D}/boot/rcw/ install
