@@ -105,6 +105,7 @@ RDEPENDS_${PN}_append_ls2088ardb= " \
     dpdk \
 "
 RDEPENDS_${PN}_append_lx2160a = " \
+    canutils \
     devmem2 \
     dpdk \
     gdbserver \
