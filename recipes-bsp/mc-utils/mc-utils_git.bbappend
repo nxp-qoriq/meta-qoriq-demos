@@ -1,6 +1,7 @@
 SRCREV = "777c0024f207ca3e90b75b3e451841c29eadf55d"
 
-MC_CFG_lx2160a = "lx2160a"
+MC_CFG_lx2160aqds = "lx2160a/QDS"
+MC_CFG_lx2160ardb = "lx2160a/RDB"
 
 do_install_lx2160a () {
 	oe_runmake -C config
