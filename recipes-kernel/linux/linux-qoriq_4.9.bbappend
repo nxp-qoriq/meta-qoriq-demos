@@ -1,4 +1,4 @@
-SRCREV = "0350ec79cdbdabd0583938c6154eeffd84f768a7"
+SRCREV = "c0795d038e8a0de27a6937ae4aa889c4138c1409"
 
 DELTA_KERNEL_DEFCONFIG_append_lx2160a-simu = " lx2simu.config"
 
