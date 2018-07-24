@@ -2,8 +2,7 @@ require recipes-fsl/images/fsl-image-core.bb
 
 IMAGE_INSTALL += " \
     kernel-image-image \
-    ovs-dpdk \
-    qemu \
+    packagegroup-fsl-virtualization \
 "
 
 IMAGE_FSTYPES = "ext2.gz"
