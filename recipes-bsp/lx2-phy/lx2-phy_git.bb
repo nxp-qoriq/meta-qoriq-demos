@@ -13,7 +13,6 @@ do_install () {
     install -d ${D}/boot
     cp -fr ${S}/in112525 ${D}/boot
     cp -fr ${S}/aquantia ${D}/boot
-    rm -rf ${D}/boot/aquantia/*.patch
 
     if [ "${MACHINE}" = "lx2160ardb" ];then
         rm -rf ${D}/boot/aquantia/AQ28*.cld
@@ -26,7 +25,6 @@ do_deploy () {
     install -d ${DEPLOYDIR}/lx2-phy
     cp -fr ${S}/in112525 ${DEPLOYDIR}/lx2-phy
     cp -fr ${S}/aquantia ${DEPLOYDIR}/lx2-phy
-    rm -rf ${DEPLOYDIR}/lx2-phy/aquantia/*.patch
 
     if [ "${MACHINE}" = "lx2160ardb" ];then
         rm -rf ${DEPLOYDIR}/lx2-phy/aquantia/AQ28*.cld
