@@ -19,7 +19,7 @@ DEPENDS_append_qoriq-arm = " change-file-endianess-native dtc-native tcl-native"
 DEPENDS_append_qoriq-ppc = " boot-format-native"
 
 SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/u-boot;nobranch=1"
-SRCREV = "18773ea48fa47549a20ada77f9bef466d2bc4b43"
+SRCREV = "e52da33c0898d373ba3d6dc945ffb725e50ba866"
 
 S = "${WORKDIR}/git"
 
