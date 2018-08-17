@@ -24,7 +24,6 @@ RDEPENDS_${PN} = " \
     inetutils-ping \
     inetutils-ping6 \
     inetutils-rsh \
-    inetutils-telnet \
     inetutils-traceroute \
     ipsec-tools \
     ipsec-demo \
@@ -37,7 +36,6 @@ RDEPENDS_${PN} = " \
 RDEPENDS_${PN}-server = " \
     inetutils-inetd \
     inetutils-rshd \
-    inetutils-telnetd \
 "
 
 RDEPENDS_${PN}_append_qoriq = "\
