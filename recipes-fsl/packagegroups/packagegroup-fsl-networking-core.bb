@@ -18,6 +18,7 @@ RDEPENDS_${PN} = " \
     iptables \
     iputils \
     inetutils \
+    inetutils-ftp \
     inetutils-hostname \
     inetutils-ifconfig \
     inetutils-logger \
@@ -34,6 +35,7 @@ RDEPENDS_${PN} = " \
 "
 
 RDEPENDS_${PN}-server = " \
+    inetutils-ftpd \
     inetutils-inetd \
     inetutils-rshd \
 "
