@@ -1,7 +1,7 @@
 SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/dpdk.git;branch=17.11-qoriq;protocol=https \
            file://add-RTE_KERNELDIR_OUT-to-split-kernel-bu.patch \
 "
-SRCREV = "dbb2592747bac13a3a4825f19c57603956c0219b"
+SRCREV = "af17971becea88228a5edda2cb44805891ff54e0"
 
 do_install_append_lx2160a () {
     rm -rf ${D}${datadir}/dpdk
