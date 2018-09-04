@@ -13,12 +13,12 @@ REGLEX_lx2160a = "lx2160a"
 
 do_install () {
     install -d ${D}/boot
-    install -m 755 ${S}/${REGLEX}/*.itb ${D}/boot
+    install -m 755 ${S}/${REGLEX}/* ${D}/boot
 }
 
 do_deploy () {
     install -d ${DEPLOYDIR}/ddr-phy
-    install -m 755 ${S}/${REGLEX}/*.itb ${DEPLOYDIR}/ddr-phy
+    install -m 755 ${S}/${REGLEX}/* ${DEPLOYDIR}/ddr-phy
 }
 addtask deploy before do_build after do_install
 
