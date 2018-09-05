@@ -1,0 +1,1 @@
+addtask deploy before do_populate_sysroot after do_install
