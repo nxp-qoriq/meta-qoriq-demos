@@ -20,7 +20,7 @@ do_deploy () {
     install -d ${DEPLOYDIR}/ddr-phy
     install -m 755 ${S}/${REGLEX}/* ${DEPLOYDIR}/ddr-phy
 }
-addtask deploy before do_build after do_install
+addtask deploy before do_populate_sysroot after do_install
 
 PACKAGES += "${PN}-image"
 FILES_${PN}-image += "/boot"
