@@ -1,0 +1,26 @@
+From bfa7385fb7873af7e5a4816fa0f2625a52a1a875 Mon Sep 17 00:00:00 2001
+From: Chunrong Guo <chunrong.guo@nxp.com>
+Date: Wed, 5 Sep 2018 13:26:59 +0800
+Subject: [PATCH] qemu: virtio-net-pci instead of virtio-net-device
+
+Signed-off-by: mengkun.chen <mengkun.chen@nxp.com>
+---
+ qemu/qemu_command.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/qemu/qemu_command.c b/src/qemu/qemu_command.c
+index 368bd87..4344b66 100644
+--- a/src/qemu/qemu_command.c
++++ b/src/qemu/qemu_command.c
+@@ -3361,7 +3361,7 @@ qemuBuildNicDevStr(virDomainDefPtr def,
+         else if (net->info.type == VIR_DOMAIN_DEVICE_ADDRESS_TYPE_VIRTIO_S390)
+             nic = "virtio-net-s390";
+         else if (net->info.type == VIR_DOMAIN_DEVICE_ADDRESS_TYPE_VIRTIO_MMIO)
+-            nic = "virtio-net-device";
++            nic = "virtio-net-pci";
+         else
+             nic = "virtio-net-pci";
+ 
+-- 
+2.7.4
+
