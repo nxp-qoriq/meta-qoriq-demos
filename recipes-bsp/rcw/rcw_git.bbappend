@@ -18,3 +18,4 @@ do_install () {
         mv -f $f_swap $f
     done
 }
+addtask deploy before do_populate_sysroot after do_install
