@@ -185,6 +185,8 @@ LAYER_LIST=" \
     meta-openembedded/meta-filesystems \
     meta-openembedded/meta-webserver \
     meta-openembedded/meta-perl \
+    meta-cloud-services/meta-openstack \
+    meta-cloud-services \
     meta-virtualization \
     meta-security \
     \
