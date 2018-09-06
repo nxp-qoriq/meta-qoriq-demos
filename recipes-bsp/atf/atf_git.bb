@@ -8,10 +8,10 @@ DEPENDS = "ddr-phy rcw uefi"
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/atf.git;branch=dev01;protocol=https \
+SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/atf.git;branch=lx2160_bsp;protocol=https \
            file://0001-plat-nxp-fix-tool-build-issue.patch \
 "
-SRCREV = "6e88b1d9561d776f7767f972b4c6799c835c53a7"
+SRCREV = "2eeb1962b473d45614f04ba3b8e993362e638b60"
 
 BOOTTYPE ?= "flexspi_nor" 
 UEFI_BIN ?= "${DEPLOY_DIR_IMAGE}/uefi/${MACHINE}/LX2160ARDB_EFI.fd" 
