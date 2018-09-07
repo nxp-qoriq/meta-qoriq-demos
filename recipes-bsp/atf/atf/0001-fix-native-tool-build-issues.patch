@@ -1,0 +1,48 @@
+From d6ade8094a38f2987d46a4ed2ade6d1682ee158c Mon Sep 17 00:00:00 2001
+From: BJ DevOps Team <bjdevops@NXP1.onmicrosoft.com>
+Date: Fri, 7 Sep 2018 16:28:23 +0800
+Subject: [PATCH] fix native tool build issues
+
+Signed-off-by: BJ DevOps Team <bjdevops@NXP1.onmicrosoft.com>
+---
+ plat/nxp/tools/Makefile | 1 +
+ tools/fiptool/Makefile  | 4 ++--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/plat/nxp/tools/Makefile b/plat/nxp/tools/Makefile
+index 2095294..1b3b4fe 100644
+--- a/plat/nxp/tools/Makefile
++++ b/plat/nxp/tools/Makefile
+@@ -34,6 +34,7 @@ endif
+ INCLUDE_PATHS :=
+ 
+ HOSTCC ?= gcc
++CC = gcc
+ 
+ .PHONY: all clean distclean
+ 
+diff --git a/tools/fiptool/Makefile b/tools/fiptool/Makefile
+index e0e3923..ceac0c9 100644
+--- a/tools/fiptool/Makefile
++++ b/tools/fiptool/Makefile
+@@ -19,7 +19,7 @@ ifeq (${DEBUG},1)
+ else
+   CFLAGS += -O2
+ endif
+-LDLIBS := -lcrypto
++LDLIBS := -Wl,-rpath=${NATIVE_SYSROOT}/usr/lib  -L${NATIVE_SYSROOT}/usr/lib -lcrypto
+ 
+ ifeq (${V},0)
+   Q := @
+@@ -27,7 +27,7 @@ else
+   Q :=
+ endif
+ 
+-INCLUDE_PATHS := -I../../include/tools_share
++INCLUDE_PATHS := -I../../include/tools_share -I${NATIVE_SYSROOT}/usr/include
+ 
+ HOSTCC ?= gcc
+ 
+-- 
+1.8.3.1
+

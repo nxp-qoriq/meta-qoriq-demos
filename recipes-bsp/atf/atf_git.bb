@@ -4,12 +4,12 @@ LIC_FILES_CHKSUM = "file://license.rst;md5=e927e02bca647e14efd87e9e914b2443"
 
 inherit deploy
 
-DEPENDS = "ddr-phy rcw uefi"
+DEPENDS = "openssl-native ddr-phy rcw uefi"
 
 S = "${WORKDIR}/git"
 
 SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/atf.git;branch=lx2160_bsp;protocol=https \
-           file://0001-plat-nxp-fix-tool-build-issue.patch \
+           file://0001-fix-native-tool-build-issues.patch \
 "
 SRCREV = "2eeb1962b473d45614f04ba3b8e993362e638b60"
 
@@ -24,8 +24,8 @@ AS[unexport] = "1"
 LD[unexport] = "1"
 
 do_compile() {
-      cd ${S}
       export CROSS_COMPILE="${TARGET_PREFIX}"
+      export NATIVE_SYSROOT="${RECIPE_SYSROOT_NATIVE}"
       oe_runmake V=1 PLAT=${MACHINE} BL33=${UEFI_BIN} pbl BOOT_MODE=${BOOTTYPE} RCW=${RCW_BIN} fip
       tools/fiptool/fiptool create \
         --ddr-immem-udimm-1d ${DEPLOY_DIR_IMAGE}/ddr-phy/ddr4_pmu_train_imem.bin \
@@ -48,3 +48,4 @@ addtask deploy before do_build after do_compile
 
 COMPATIBLE_MACHINE = "(lx2160ardb)"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
+PARALLEL_MAKE=""
