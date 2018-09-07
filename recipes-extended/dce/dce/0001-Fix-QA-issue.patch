@@ -1,0 +1,26 @@
+From deacf9034af47ffd8cda95e98be8f32415e93a24 Mon Sep 17 00:00:00 2001
+From: BJ DevOps Team <bjdevops@NXP1.onmicrosoft.com>
+Date: Fri, 7 Sep 2018 13:30:50 +0800
+Subject: [PATCH] Fix QA issue
+
+Signed-off-by: BJ DevOps Team <bjdevops@NXP1.onmicrosoft.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 656dcaf..9afb7c9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -52,7 +52,7 @@ EXECS = $(BIN)/dce-api-perf-test
+ all: $(EXECS)
+ 
+ $(BIN)/%: tests/%.o libdce.a libqbman.a
+-	$(CC) $(CFLAGS) $^ -o $@
++	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+ 
+ 
+ libdce.a: $(OBJS)
+-- 
+1.8.3.1
+
