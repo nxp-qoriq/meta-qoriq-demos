@@ -15,7 +15,6 @@ IMAGE_INSTALL += " \
     python-pip git python-setuptools python-numpy python-lxml python-cryptography vlan rpm \
     python-docutils python-pycrypto python-dev \
     python-cffi python-cryptography python-greenlet python-psutil python-six \
-    nova-compute \
     python-netifaces openssl openssl-qoriq openssl-dev\
 "
 
