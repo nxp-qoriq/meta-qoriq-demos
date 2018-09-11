@@ -1,6 +1,6 @@
-From deacf9034af47ffd8cda95e98be8f32415e93a24 Mon Sep 17 00:00:00 2001
+From f2ec777437649110738fbcd7402de17f8ec2298a Mon Sep 17 00:00:00 2001
 From: BJ DevOps Team <bjdevops@NXP1.onmicrosoft.com>
-Date: Fri, 7 Sep 2018 13:30:50 +0800
+Date: Tue, 11 Sep 2018 11:18:27 +0800
 Subject: [PATCH] Fix QA issue
 
 Signed-off-by: BJ DevOps Team <bjdevops@NXP1.onmicrosoft.com>
