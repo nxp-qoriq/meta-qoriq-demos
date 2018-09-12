@@ -8,7 +8,7 @@ DEPENDS = "openssl-native ddr-phy rcw uefi"
 
 S = "${WORKDIR}/git"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/scm/gitam/atf.git;branch=lx2160_bsp;protocol=https \
+SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/atf;nobranch=1 \
            file://0001-fix-native-tool-build-issues.patch \
 "
 SRCREV = "2eeb1962b473d45614f04ba3b8e993362e638b60"
