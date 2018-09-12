@@ -8,8 +8,8 @@ SRC_URI = " \
   git://bitbucket.sw.nxp.com/scm/dpaa2/qbman_userspace.git;branch=qman50;protocol=https;name=qbman;destsuffix=git/lib/qbman_userspace \
   file://0001-Fix-QA-issue.patch \
 "
-SRCREV = "2f78486d2ee6fd92907b86b4b831b7adf9984216"
-SRCREV_qbman = "e8679bb21b6cb9791c72f516f6a4a31ac7cf3a42"
+SRCREV = "7d2a2f8529891d4ba15a83ddb3e44d759fc7a165"
+SRCREV_qbman = "ecf3647e894aa259556d3dcf35a55725230b8cc5"
 
 S = "${WORKDIR}/git"
 
