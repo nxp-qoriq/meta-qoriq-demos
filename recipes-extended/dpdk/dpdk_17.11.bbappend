@@ -1,4 +1,4 @@
-SRCREV = "0c0332ae0016ca6742961f1f4ac6e2f4fdbe215a"
+SRCREV = "6ac2bb6d3e7b388695103b78f548acc7bb8661cf"
 
 do_install_append_lx2160a () {
     rm -rf ${D}${datadir}/dpdk

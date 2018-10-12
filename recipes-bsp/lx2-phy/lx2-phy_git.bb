@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://NXP-EULA.txt;md5=d969f2c93b3905d4b628787ce5f8df4b"
 inherit deploy
 
 SRC_URI = "git://github.com/nxp/qoriq-firmware-cortina.git;protocol=https;nobranch=1"
-SRCREV = "91eb51dc43606e0d5ce3382c8422407041c8df9a"
+SRCREV = "904f4d0d0822ea2338c79dec0f6eda924fd9a9e3"
 
 S = "${WORKDIR}/git"
 
