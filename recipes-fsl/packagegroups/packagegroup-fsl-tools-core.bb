@@ -18,6 +18,7 @@ RDEPENDS_${PN} = " \
     i2c-tools \
     kmod \
     kernel-modules \
+    kexec \
     libhugetlbfs \
     lmsensors-sensors \
     memtester \
