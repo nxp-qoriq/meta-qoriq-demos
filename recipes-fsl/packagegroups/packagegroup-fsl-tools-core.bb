@@ -18,6 +18,7 @@ RDEPENDS_${PN} = " \
     i2c-tools \
     kmod \
     kernel-modules \
+    kdump \
     kexec \
     libhugetlbfs \
     lmsensors-sensors \
@@ -36,6 +37,7 @@ RDEPENDS_${PN} = " \
     sysfsutils \
     sysklogd \
     sysstat \
+    vmcore-dmesg \
 "
 
 IPC_PKGS = " \
