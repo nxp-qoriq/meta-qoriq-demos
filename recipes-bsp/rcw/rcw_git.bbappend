@@ -1,1 +1,2 @@
-SRCREV = "f1377876cc06a87ec8afa8a3412ca7c8455861f2"
+SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-rcw.git;protocol=ssh;nobranch=1"
+SRCREV = "a25dde794c61e38bf868b30b58b77b63029d55f6"

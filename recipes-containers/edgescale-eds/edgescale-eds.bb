@@ -20,7 +20,7 @@ SRC_URI = "\
         git://github.com/edgeiot/est-client-go;nobranch=1;destsuffix=git/src/github.com/edgeiot/est-client-go;name=est-client-go \
         file://${ARM}/cert-agent \
         "
-SRCREV = "7d70a8767941aed135d609300a0594dfdc60e5ea"
+SRCREV = "4d561e1c8a5486c379cd5ca7003772a4e1c96b55"
 SRCREV_sys = "cb59ee3660675d463e86971646692ea3e470021c"
 SRCREV_crypto = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 SRCREV_net = "927f97764cc334a6575f4b7a1584a147864d5723"
@@ -43,7 +43,8 @@ DEPENDS_append_qoriq-arm64 = "optee-client-qoriq secure-obj"
 
 RDEPENDS_${PN}_append_qoriq-arm64 = "optee-client-qoriq secure-obj"
 
-GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
+#GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
+GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-edgescale-eds"
 
 S = "${WORKDIR}/git"
 inherit go
