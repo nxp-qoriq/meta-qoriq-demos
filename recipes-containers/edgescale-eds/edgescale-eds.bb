@@ -39,9 +39,10 @@ RDEPENDS_${PN} += " \
           eds-bootstrap \
 "
 
-DEPENDS_append_qoriq-arm64 = "optee-client-qoriq secure-obj"
+SECURE_OBJ = "${@bb.utils.contains('DISTRO_FEATURES', 'edgescale-optee', 'secure-obj', '', d)}"
+DEPENDS_append_qoriq-arm64 = "optee-client-qoriq ${SECURE_OBJ}"
 
-RDEPENDS_${PN}_append_qoriq-arm64 = "optee-client-qoriq secure-obj"
+RDEPENDS_${PN}_append_qoriq-arm64 = "optee-client-qoriq ${SECURE_OBJ}"
 
 #GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
 GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-edgescale-eds"
