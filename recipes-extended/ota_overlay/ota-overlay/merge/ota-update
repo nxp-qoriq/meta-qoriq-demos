@@ -15,6 +15,7 @@ deviceid=$ES_DEVICEID
 platform=$(echo $deviceid | awk -F . '{print $4}')
 boardname=$platform"rdb"
 bootimageVersion=`cat /usr/local/edgescale/conf/edgescale-version | awk -F '-' '{print $2}'`
+devpartname=mmcblk0p
 
 if [ "$platform"x == x ];then
 	echo "there is no platform information"
@@ -103,7 +104,7 @@ download_images(){
 	count=1
 	while [ $count -le 5 ]
 	do
-		wget -O /run/media/mmcblk0p3/updateImages/full_images.tgz -c $imageURL
+		wget -O /run/media/mmcblk0p3/updateImages/full_images_default.tgz -c $imageURL
 		if [ $? != 0 ];then
 			((count++))
 			echo "retrying $count times"
@@ -118,6 +119,24 @@ download_images(){
 	fi
 }
 
+umount_device() {
+    if cat /proc/mounts | grep $devpartname; then
+	sudo umount /dev/${devpartname}* 2>/dev/null || true 1>/dev/null 2>&1
+    fi
+}
+
+mount_device() {
+    for i in {1..3}
+    do
+        if [ ! -d /run/media/${devpartname}$i ];then
+             mkdir -p /run/media/${devpartname}$i
+        fi
+        if ! mount | grep ${devpartname}$i; then
+             mount -t ext4 /dev/${devpartname}$i /run/media/${devpartname}$i 1>/dev/null 2>&1
+        fi
+    done
+}
+
 sd_card_format(){
 	flex-installer -i pf -d sd
 	if [ ! -d "/run/media/mmcblk0p3" ];then
@@ -126,9 +145,30 @@ sd_card_format(){
 	fi
 }
 
+partition_format(){
+    bootpartnum=1
+    syspartnum=2
+
+    echo "Formatting partitions ..."
+
+    umount_device
+    mkfs.ext4 -F -q -b 4096 -L boot -O ^64bit,^metadata_csum /dev/${devpartname}$bootpartnum
+    umount_device
+    mkfs.ext4 -F -q -O ^huge_file,^64bit,^metadata_csum -b 4096 -L system /dev/${devpartname}$syspartnum
+    mount_device
+
+    echo "partition and format ${devpartname}"
+
+}
+
 install_images(){
-	cd /run/media/mmcblk0p3/updateImages
-	tar -xf full_images.tgz
+	download_path=/run/media/mmcblk0p3/updateImages
+	cd ${download_path}
+	if [ "$updateStatus"x == 8x ];then
+		tar -xf full_images_deploy.tgz
+	else
+		tar -xf full_images_default.tgz
+	fi
 	if [ ! -f "install.sh" ];then
 		firmware_file=`ls *firmware*.img`
 		boot_file=`ls *boot*.tgz`
@@ -151,40 +191,31 @@ install_images(){
 		flex-installer -i install --bootpart=$boot_file --rootfs=$rootfs_file --machine=$boardname --device=sd
 		setup_ima_evm
 	else
-		chmod +x ./install.sh
-		./install.sh
+		chmod +x ${download_path}/install.sh
+		.${download_path}/install.sh
 		if [ $? != 0 ];then
 			reboot
 		fi
 	fi
-	rm -f /run/media/mmcblk0p3/updateImages/*
+	ls | grep -v 'full_images_default*' | xargs rm -rf
 	cd ~/
-	for i in {1..3}
-	do
-		umount /dev/mmcblk0p$i
-	done
+	umount_device
 }
 
 update_images(){
 	download_path=/run/media/mmcblk0p3/updateImages
-	for i in {1..3}
-	do
-		mkdir -p /run/media/mmcblk0p$i
-		mount /dev/mmcblk0p$i  /run/media/mmcblk0p$i
-	done
-	if [ "true"x = "$have_installer"x ];then
+	if [ ! -d ${download_path} ];then
 		mkdir -p ${download_path}
-		tar -xf ${download_path}/full_images.tgz -C ${download_path}
+	fi
+	if [ "true"x = "$have_installer"x ];then
+		tar -xf ${download_path}/full_images_deploy.tgz -C ${download_path}
 		chmod +x ${download_path}/install.sh
 		${download_path}/install.sh
 		if [ $? != 0 ];then
+			find ${download_path}/* | grep -v 'full_image_default*' | xargs rm -rf {}
 			reboot
 		fi
-		rm -rf ${download_path}/*
-		for i in {1..3}
-		do
-			umount  /run/media/mmcblk0p$i
-		done
+		umount_device
 	else
 		install_images
 	fi
@@ -205,8 +236,9 @@ elif [ "$updateStatus"x == 8x ];then
 	echo "Now need update the image to version=$newimageVersion"
 	imageVersion=$newimageVersion
 	get_imageURL
-	updateStatus=1
+	partition_format
 	update_images
+	updateStatus=1
 	echo "$updateStatus $platform $oldimageVersion $imageVersion $solutionname $solutionid $autoOta $mid" > /tmp/ota-info
 	dd if=/tmp/ota-info of=/dev/mmcblk0 bs=512 seek=129024 count=1 conv=sync
 else
