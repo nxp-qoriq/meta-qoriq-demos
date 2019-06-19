@@ -100,7 +100,10 @@ setup_ima_evm(){
 }
 
 download_images(){
-	mkdir -p /run/media/mmcblk0p3/updateImages
+	download_path=/run/media/mmcblk0p3/updateImages
+	if [ ! -d ${download_path} ];then
+		mkdir -p ${download_path}
+	fi
 	count=1
 	while [ $count -le 5 ]
 	do
@@ -123,9 +126,9 @@ check_disk_capacity() {
     devname=mmcblk0
     disksize=$[ `fdisk -ls /dev/$devname` / 1000000 ]
     if [ $disksize -ge 15 ] ; then
-	print_n "/dev/$devname: $disksize GB"
+	echo "/dev/$devname: $disksize GB"
     else
-	print_e "The capacity of /dev/$devname $disksize GB is not enough, 32 GB or above is recommended"
+	echo "The capacity of /dev/$devname $disksize GB is not enough, 32 GB or above is recommended"
 	exit
     fi
 }
@@ -137,8 +140,8 @@ umount_device() {
 }
 
 mount_device() {
-    for i in {2..4}
-    do
+    efipartnum=1;bootpartnum=2;backuppartnum=3;syspartnum=4
+    for i in $efipartnum $bootpartnum $backuppartnum $syspartnum; do
         if [ ! -d /run/media/${devpartname}$i ];then
              mkdir -p /run/media/${devpartname}$i
         fi
@@ -149,8 +152,10 @@ mount_device() {
 }
 
 sd_card_format(){
+	# External space size is the sum of EFI BOOT SYS space.The size of the system can be adjusted by changing the value of this constant.
+	ext_space_size=6
 	check_disk_capacity
-	backup_size=`expr $disksize - 6`
+	backup_size=`expr $disksize - $ext_space_size`
 	flex-installer -i pf -d sd -p 4P=100M:1G:${backup_size}G:-1
 	if [ ! -d "/run/media/mmcblk0p3" ];then
 		echo "partition of SD card is not right"
@@ -176,7 +181,10 @@ partition_format(){
 
 install_images(){
 	download_path=/run/media/mmcblk0p3/updateImages
-	mkdir -p /run/media/mmcblk0p3/docker
+	docker_path=/run/media/mmcblk0p3/docker
+	if [ ! -d ${docker_path} ];then
+		mkdir -p ${docker_path}
+	fi
 	cd ${download_path}
 	if [ "$updateStatus"x == 8x ];then
 		tar -xf full_images_deploy.tgz
@@ -218,9 +226,12 @@ install_images(){
 
 update_images(){
 	download_path=/run/media/mmcblk0p3/updateImages
-	mkdir -p /run/media/mmcblk0p3/docker
+	docker_path=/run/media/mmcblk0p3/docker
 	if [ ! -d ${download_path} ];then
 		mkdir -p ${download_path}
+	fi
+	if [ ! -d ${docker_path} ];then
+		mkdir -p ${docker_path}
 	fi
 	if [ "true"x = "$have_installer"x ];then
 		tar -xf ${download_path}/full_images_deploy.tgz -C ${download_path}
