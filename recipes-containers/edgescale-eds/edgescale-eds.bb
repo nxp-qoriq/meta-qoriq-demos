@@ -17,7 +17,7 @@ SRC_URI = "\
         git://github.com/go-yaml/yaml.git;nobranch=1;destsuffix=git/src/gopkg.in/yaml.v2;name=yaml \
         git://github.com/edgeiot/est-client-go;nobranch=1;destsuffix=git/src/github.com/edgeiot/est-client-go;name=est-client-go \
         "
-SRCREV = "4d561e1c8a5486c379cd5ca7003772a4e1c96b55"
+SRCREV = "9b0090ae701547272e3670cbb12125d73f5e26ba"
 SRCREV_sys = "cb59ee3660675d463e86971646692ea3e470021c"
 SRCREV_crypto = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 SRCREV_net = "927f97764cc334a6575f4b7a1584a147864d5723"
