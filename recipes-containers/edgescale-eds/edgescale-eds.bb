@@ -42,8 +42,7 @@ DEPENDS_append_qoriq-arm64 = "optee-client-qoriq ${SECURE_OBJ}"
 
 RDEPENDS_${PN}_append_qoriq-arm64 = "optee-client-qoriq ${SECURE_OBJ}"
 
-#GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
-GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-edgescale-eds"
+GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
 
 S = "${WORKDIR}/git"
 inherit go
