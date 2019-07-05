@@ -6,11 +6,17 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
+SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/linux;nobranch=1 \
+"
 SRCREV = "1a4cab2c597de7ac87c6ab4ce2a42e5e5adb3c0b"
 
 SRC_URI += " file://0001-Makfefile-add-cflags.patch \
 "
 S = "${WORKDIR}/git"
+
+SRC_URI_append = " file://ima-evm.config"
+
+DELTA_KERNEL_DEFCONFIG = "${@bb.utils.contains('DISTRO_FEATURES', 'ima-evm', 'ima-evm.config', '', d)}"
 
 DEPENDS_append = " libgcc"
 # not put Images into /boot of rootfs, install kernel-image if needed
