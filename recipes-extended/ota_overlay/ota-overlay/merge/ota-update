@@ -128,7 +128,7 @@ check_disk_capacity() {
     if [ $disksize -ge 15 ] ; then
 	echo "/dev/$devname: $disksize GB"
     else
-	echo "The capacity of /dev/$devname $disksize GB is not enough, 32 GB or above is recommended"
+	echo "The capacity of /dev/$devname $disksize GB is not enough, 16 GB or above is recommended"
 	exit
     fi
 }
@@ -152,11 +152,8 @@ mount_device() {
 }
 
 sd_card_format(){
-	# External space size is the sum of EFI BOOT SYS space.The size of the system can be adjusted by changing the value of this constant.
-	ext_space_size=6
 	check_disk_capacity
-	backup_size=`expr $disksize - $ext_space_size`
-	flex-installer -i pf -d sd -p 4P=100M:1G:${backup_size}G:-1
+	flex-installer -i pf -d sd -p 4P=100M:1G:$[($disksize - 2) * 2 / 3]G:-1
 	if [ ! -d "/run/media/mmcblk0p3" ];then
 		echo "partition of SD card is not right"
 		exit 1
