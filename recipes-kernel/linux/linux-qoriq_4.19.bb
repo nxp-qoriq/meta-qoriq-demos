@@ -6,9 +6,9 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
-SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/linux;nobranch=1 \
-"
-SRCREV = "1a4cab2c597de7ac87c6ab4ce2a42e5e5adb3c0b"
+
+SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-lts.git;protocol=ssh;nobranch=1"
+SRCREV = "962cc3605110a0fc266433faa26b5ec5b6e1b622"
 
 SRC_URI += " file://0001-Makfefile-add-cflags.patch \
 "
