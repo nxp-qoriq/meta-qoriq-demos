@@ -10,6 +10,7 @@ TYPE_ls1046afrwy ?= "qspi"
 TYPE_ls1088a ?= "qspi"
 TYPE_lx2160ardb ?= "xspi"
 TYPE_ls1012ardb ?= "qspi"
+TYPE_ls1028ardb ?= "xspi"
 
 SRC_URI = "file://gen_flash_image.pl \
     file://${MACHINE}/flashmap_${TYPE}.cfg \
