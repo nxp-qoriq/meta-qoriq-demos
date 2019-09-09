@@ -183,8 +183,18 @@ install_images(){
 		mkdir -p ${docker_path}
 	fi
 	cd ${download_path}
-	if [ "$updateStatus"x == 8x ];then
+	if [ "$updateStatus"x == 4x ];then
 		tar -xf full_images_deploy.tgz
+	elif [ "$updateStatus"x == 2x ];then
+		if [ -e full_images_deploy_old.tgz ];then
+			mv full_images_deploy_old.tgz full_images_deploy.tgz
+			tar -xf full_images_deploy.tgz
+		elif [ -e full_images_deploy.tgz ];then
+			rm full_images_deploy.tgz
+			tar -xf full_images_default.tgz
+		else
+			tar -xf full_images_default.tgz
+		fi
 	else
 		tar -xf full_images_default.tgz
 	fi
@@ -255,7 +265,16 @@ if [ "$updateStatus"x == 3x -a $oldimageVersion != 0 ];then
 	install_images
 	echo "$updateStatus $platform $oldimageVersion $imageVersion $solutionname $solutionid $autoOta $mid" > /tmp/ota-info
 	dd if=/tmp/ota-info of=/dev/mmcblk0 bs=512 seek=129024 count=1 conv=sync
-elif [ "$updateStatus"x == 8x ];then
+elif [ "$updateStatus"x == 2x -a $oldimageVersion != 0 ];then
+	echo "Now need rollback the last working image version=$oldimageVersion"
+	feedback_status "ota-rollback"
+	imageVersion=$oldimageVersion
+	partition_format
+	install_images
+	updateStatus=1
+	echo "$updateStatus $platform $oldimageVersion $imageVersion $solutionname $solutionid $autoOta $mid" > /tmp/ota-info
+	dd if=/tmp/ota-info of=/dev/mmcblk0 bs=512 seek=129024 count=1 conv=sync
+elif [ "$updateStatus"x == 4x ];then
 	echo "Now need update the image to version=$newimageVersion"
 	imageVersion=$newimageVersion
 	get_imageURL
