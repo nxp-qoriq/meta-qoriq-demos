@@ -4,10 +4,16 @@ SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-uboot.git;protocol=ssh;nobranch=
 "
 SRCREV = "508b1cf2ca4b47b3fc7c2a0cd6a04a1a14576483"
 
-SRC_URI_append_qoriq-arm64 = " file://0001-Add-OTA-support.patch \
-"
-SRC_URI_append_qoriq-arm = " file://0001-Add-OTA-support.patch \
-"
+LS_PATCHES = "file://0001-Add-OTA-support.patch"
+
+SINGLE_PATCHES = "file://0001-Enable-POLICY_OTA-for-Layerscape-boards.patch"
+
+SRC_URI_append_qoriq-arm64 += " ${@bb.utils.contains('DISTRO_FEATURES', 'ota', '${LS_PATCHES}', '', d)}"
+SRC_URI_append_qoriq-arm += " ${@bb.utils.contains('DISTRO_FEATURES', 'ota', '${LS_PATCHES}', '', d)}"
+
+SRC_URI_append_qoriq-arm64 += " ${@bb.utils.contains('DISTRO_FEATURES', 'singleboot', '${SINGLE_PATCHES}', '', d)}"
+SRC_URI_append_qoriq-arm += " ${@bb.utils.contains('DISTRO_FEATURES', 'singleboot', '${SINGLE_PATCHES}', '', d)}"
+
 PARALLEL_MAKE = ""
 
 require recipes-bsp/u-boot/u-boot.inc

@@ -1,11 +1,12 @@
 SRC_URI = "git://bitbucket.sw.nxp.com/gitam/atf.git;protocol=ssh;nobranch=1"
-SRCREV = "a6972c1ac7092bd4a1a5e46686cde69a81c2923a"
+SRCREV = "a9d6a2cae19de01500c1caf92da7852e803354a3"
 UEFI_QSPIBOOT_ls1046ardb ?= "LS1046ARDB_EFI_QSPIBOOT.fd"
 
 DEPENDS_append_qoriq-arm64 += "${@bb.utils.contains('DISTRO_FEATURES', 'optee', 'optee-os-qoriq', '', d)}"
 DEPENDS_append_lx2160a += "ddr-phy"
 chassistype_ls1046afrwy = "ls104x_1012"
 
+BOOTTYPES ?= "nor qspi flexspi_nor"
 do_compile() {
     export LIBPATH="${RECIPE_SYSROOT_NATIVE}"
     install -d ${S}/include/tools_share/openssl
@@ -39,7 +40,7 @@ do_compile() {
         cp ${DEPLOY_DIR_IMAGE}/ddr-phy/*.bin ${S}/
     fi
 
-    for d in ${BOOTTYPE}; do
+    for d in ${BOOTTYPES}; do
         case $d in
         nor)
             rcwimg="${RCWNOR}${rcwtemp}.bin"
@@ -66,25 +67,16 @@ do_compile() {
             
 	if [ -f "${DEPLOY_DIR_IMAGE}/rcw/${PLATFORM}/${rcwimg}" ]; then
                 oe_runmake V=1 -C ${S} realclean
-                oe_runmake V=1 -C ${S} all fip pbl PLAT=${PLATFORM} BOOT_MODE=${d} RCW=${DEPLOY_DIR_IMAGE}/rcw/${PLATFORM}/${rcwimg} BL33=${bl33} ${bl32opt} ${spdopt} ${secureopt} ${fuseopt}
+                oe_runmake V=1 -C ${S} all fip pbl PLAT=${PLATFORM} BOOT_MODE=${d} POLICY_OTA=1 RCW=${DEPLOY_DIR_IMAGE}/rcw/${PLATFORM}/${rcwimg} BL33=${bl33} ${bl32opt} ${spdopt} ${secureopt} ${fuseopt}
                 cp -r ${S}/build/${PLATFORM}/release/bl2_${d}*.pbl ${S}
                 cp -r ${S}/build/${PLATFORM}/release/fip.bin ${S}
                 if [ "${BUILD_FUSE}" = "true" ]; then
                     cp -f ${S}/build/${PLATFORM}/release/fuse_fip.bin ${S}
                 fi
 
-                if [ ${MACHINE} = ls1012afrwy ]; then
-                    oe_runmake V=1 -C ${S} realclean
-                    oe_runmake V=1 -C ${S} all fip pbl PLAT=ls1012afrwy_512mb BOOT_MODE=${d} RCW=${DEPLOY_DIR_IMAGE}/rcw/${PLATFORM}/${rcwimg} BL33=${bl33} ${bl32opt} ${spdopt} ${secureopt} ${fuseopt}
-                    cp -r ${S}/build/ls1012afrwy_512mb/release/bl2_qspi${secext}.pbl ${S}/bl2_${d}${secext}_512mb.pbl
-                    cp -r ${S}/build/ls1012afrwy_512mb/release/fip.bin ${S}/fip_512mb.bin
-                    if [ "${BUILD_FUSE}" = "true" ]; then
-                        cp -r ${S}/build/ls1012afrwy_512mb/release/fuse_fip.bin ${S}/fuse_fip_512mb.bin
-                    fi
-                fi
                 if [ -n "${uefiboot}" ]; then
                     oe_runmake V=1 -C ${S} realclean
-                    oe_runmake V=1 -C ${S} all fip pbl PLAT=${PLATFORM} BOOT_MODE=${d} RCW=${DEPLOY_DIR_IMAGE}/rcw/${PLATFORM}/${rcwimg} BL33=${DEPLOY_DIR_IMAGE}/uefi/${PLATFORM}/${uefiboot} ${bl32opt} ${spdopt} ${secureopt} ${fuseopt}
+                    oe_runmake V=1 -C ${S} all fip pbl PLAT=${PLATFORM} BOOT_MODE=${d} POLICY_OTA=1 RCW=${DEPLOY_DIR_IMAGE}/rcw/${PLATFORM}/${rcwimg} BL33=${DEPLOY_DIR_IMAGE}/uefi/${PLATFORM}/${uefiboot} ${bl32opt} ${spdopt} ${secureopt} ${fuseopt}
                     cp -r ${S}/build/${PLATFORM}/release/fip.bin ${S}/fip_uefi.bin
                 fi
         fi
@@ -93,12 +85,54 @@ do_compile() {
     done
 }
 
-do_install_append() {
+do_install() {
+    install -d ${D}/boot/atf
+    cp -r ${S}/srk.pri ${D}/boot/atf
+    cp -r ${S}/srk.pub ${D}/boot/atf
+    if [ "${BUILD_SECURE}" = "true" ]; then
+        secext="_sec"
+    fi
+    if [ -f "${S}/fip_uefi.bin" ]; then
+        cp -r ${S}/fip_uefi.bin ${D}/boot/atf/fip_uefi.bin
+    fi
+    if [ -f "${S}/fuse_fip.bin" ]; then
+        cp -r ${S}/fuse_fip.bin ${D}/boot/atf/fuse_fip.bin
+    fi
+    if [ -f "${S}/fip.bin" ]; then
+        cp -r ${S}/fip.bin ${D}/boot/atf/fip.bin
+    fi
+    for d in ${BOOTTYPE}; do
+        if [ -e  ${S}/bl2_${d}${secext}.pbl ]; then
+            cp -r ${S}/bl2_${d}${secext}.pbl ${D}/boot/atf/bl2_${d}${secext}.pbl
+        fi
+    done
     if [ -f "${S}/fip_ddr_sec.bin" ]; then
         cp -r ${S}/fip_ddr_sec.bin ${D}/boot/atf/fip_ddr_sec.bin
     fi
+    chown -R root:root ${D}
 }
-do_deploy_append() {
+do_deploy() {
+    install -d ${DEPLOYDIR}/atf
+    cp -r ${D}/boot/atf/srk.pri ${DEPLOYDIR}/atf
+    cp -r  ${D}/boot/atf/srk.pub ${DEPLOYDIR}/atf
+    if [ "${BUILD_SECURE}" = "true" ]; then
+        secext="_sec"
+    fi
+
+    if [ -f "${S}/fuse_fip.bin" ]; then
+        cp -r ${D}/boot/atf/fuse_fip.bin ${DEPLOYDIR}/atf/fuse_fip${secext}.bin
+    fi
+
+    if [ -e ${D}/boot/atf/fip_uefi.bin ]; then
+        cp -r ${D}/boot/atf/fip_uefi.bin ${DEPLOYDIR}/atf/fip_uefi.bin
+    fi
+    cp -r ${D}/boot/atf/fip.bin ${DEPLOYDIR}/atf/fip_uboot${secext}.bin
+    for d in ${BOOTTYPE}; do
+        if [ -e ${D}/boot/atf/bl2_${d}${secext}.pbl ]; then
+            cp -r ${D}/boot/atf/bl2_${d}${secext}.pbl ${DEPLOYDIR}/atf/bl2_${d}${secext}.pbl
+        fi
+    done
+
     if [ -f "${S}/fip_ddr_sec.bin" ]; then
         cp -r ${D}/boot/atf/fip_ddr_sec.bin ${DEPLOYDIR}/atf/fip_ddr_sec.bin
     fi

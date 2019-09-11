@@ -4,6 +4,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 
 inherit update-rc.d
 
+SIG = "${@bb.utils.contains('DISTRO_FEATURES', 'singleboot', 'true', 'false', d)}"
 DEPENDS_append = " update-rc.d-native"
 SRC_URI = "file://merge"
 S = "${WORKDIR}"
@@ -21,7 +22,11 @@ do_install () {
     find ${WORKDIR}/merge/ -maxdepth 1 -mindepth 1 -not -name README \
     -exec install -m 0755  '{}' ${D}/${MERGED_DST}/ \;
     find ${WORKDIR}/merge/ -maxdepth 1 -mindepth 1 -exec rm -fr '{}' \;
+    if [ "${SIG}" = "true" ];then
+	mv ${D}/${MERGED_DST}/ota-update-singleboot ${D}/${MERGED_DST}/ota-update
+    fi
 }
+
 do_unpack[nostamp] = "1"
 do_install[nostamp] = "1"
 do_configure[noexec] = "1"
