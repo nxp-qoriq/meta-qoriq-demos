@@ -1,5 +1,5 @@
 SRC_URI = "git://bitbucket.sw.nxp.com/gitam/atf.git;protocol=ssh;nobranch=1"
-SRCREV = "a9d6a2cae19de01500c1caf92da7852e803354a3"
+SRCREV = "8fc3b19e40c5ccd61c2f43f34cae47d8b1165926"
 UEFI_QSPIBOOT_ls1046ardb ?= "LS1046ARDB_EFI_QSPIBOOT.fd"
 
 DEPENDS_append_qoriq-arm64 += "${@bb.utils.contains('DISTRO_FEATURES', 'optee', 'optee-os-qoriq', '', d)}"
