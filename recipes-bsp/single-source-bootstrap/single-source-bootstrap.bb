@@ -10,6 +10,7 @@ SRC_URI = "file://create_single_boot_image.sh \
     file://ls2088ardb.manifest \
     file://ls1088ardb-pb.manifest \
     file://ls1021atwr.manifest \
+    file://ls1028ardb.manifest \
     file://ls1043ardb.manifest \
     file://ls1046ardb.manifest \
     file://ls1012ardb.manifest \
@@ -24,6 +25,7 @@ SRC_URI = "file://create_single_boot_image.sh \
     file://ls1088ardb-pb/env_bootstrap.img \
     file://ls2088ardb/env_bootstrap.img \
     file://lx2160ardb/env_bootstrap.img \
+    file://ls1028ardb/env_bootstrap.img \
 "
 
 inherit deploy
@@ -43,6 +45,7 @@ BOOT_TYPE_ls1046afrwy ?= "qspi"
 BOOT_TYPE_ls1088a ?= "qspi"
 BOOT_TYPE_ls2088ardb ?= "nor"
 BOOT_TYPE_lx2160ardb ?= "xspi"
+BOOT_TYPE_ls1028ardb ?= "xspi"
 BOOT_TYPE_ls1012ardb ?= "qspi"
 BOOT_TYPE_ls1012afrwy ?= "qspi"
 BOOT_TYPE_ls1021atwr ?= "qspi nor"
