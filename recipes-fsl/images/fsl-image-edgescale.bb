@@ -17,6 +17,7 @@ IMAGE_INSTALL_append = " \
     coreutils \
     curl \
     parted  \
+    mtd-utils  \
     net-tools \
     util-linux-fdisk \
     util-linux-lsblk \

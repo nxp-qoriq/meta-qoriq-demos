@@ -78,9 +78,7 @@ feedback_status(){
 }
 
 security_check(){
-	if [ "false"x = "$is_signed"x ]; then
-		echo "OEM signature not found in this solution"
-	else
+	if [ "true"x = "$is_signed"x ]; then
 		result=`echo $public_key > /tmp/rsa.base`
 		result=`cat /tmp/rsa.base | base64 -d > /tmp/rsa.pub`
 		# Using public key verify OEM images(firmware, bootpartition and rootfs)
@@ -108,6 +106,8 @@ security_check(){
 			sleep 6
 			reboot -f
 		fi
+	else
+		echo "OEM signature not found in this solution"
 	fi
 }
 
