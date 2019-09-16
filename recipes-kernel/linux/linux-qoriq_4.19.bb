@@ -6,8 +6,11 @@ SECTION = "kernel"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-lts.git;protocol=ssh;nobranch=1"
+SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-lts.git;protocol=ssh;nobranch=1 \
+    file://0001-lsdk.config-fix-issue-for-unset-ramdisk-size-in-LSDK.patch \
+"
 SRCREV = "60e5b8c0fc8ba763abb9f0e0974c2601c2579961"
 
 SRC_URI += " file://0001-Makfefile-add-cflags.patch \
