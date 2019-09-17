@@ -232,6 +232,7 @@ generate_qoriq_composite_firmware() {
 			dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=512 seek=$sd2_rcw_offset
 		else
 			dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=1K seek=0
+			cp -r $DEPLOYDIR/$bl2img $DEPLOYDIR/bl2_${BOOTTYPE}_${MACHINE}.pbl
 		fi
 	else
         	if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
