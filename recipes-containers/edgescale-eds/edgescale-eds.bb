@@ -37,10 +37,13 @@ RDEPENDS_${PN} += " \
           eds-bootstrap \
 "
 
-SECURE_OBJ = "${@bb.utils.contains('DISTRO_FEATURES', 'edgescale-optee', 'secure-obj', '', d)}"
-DEPENDS_append_qoriq-arm64 = "optee-client-qoriq ${SECURE_OBJ}"
+PACKAGECONFIG ??= " \
+    ${@bb.utils.filter('DISTRO_FEATURES', 'secure', d)} \
+    ${@bb.utils.filter('COMBINED_FEATURES', 'optee', d)} \
+"
 
-RDEPENDS_${PN}_append_qoriq-arm64 = "optee-client-qoriq ${SECURE_OBJ}"
+PACKAGECONFIG[secure] = ",,secure-obj,secure-obj-module"
+PACKAGECONFIG[optee] = ",,optee-client-qoriq"
 
 GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-edgescale-eds"
 
@@ -51,7 +54,7 @@ inherit goarch
 # This disables seccomp and apparmor, which are on by default in the
 # go package. 
 WRAP_TARGET_PREFIX ?= "${TARGET_PREFIX}"
-export GOBUILDTAGS = "${@bb.utils.contains('DISTRO_FEATURES', 'edgescale-optee', 'secure', 'default', d)}"
+export GOBUILDTAGS = "${@bb.utils.contains('DISTRO_FEATURES', 'secure', 'secure', 'default', d)}"
 export CROSS_COMPILE="${WRAP_TARGET_PREFIX}"
 export OPENSSL_PATH="${RECIPE_SYSROOT}/usr"
 export SECURE_OBJ_PATH="${RECIPE_SYSROOT}/usr"
