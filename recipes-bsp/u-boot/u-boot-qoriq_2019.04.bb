@@ -2,7 +2,7 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
 SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-uboot.git;protocol=ssh;nobranch=1 \
 "
-SRCREV = "caf6c6f0734b1041a77c316a6413b2c90e31eee0"
+SRCREV = "82ea9841a80ddabbfa283c35f9ee42a03a6fa654"
 
 LS_PATCHES = "file://0001-Add-OTA-support.patch"
 
