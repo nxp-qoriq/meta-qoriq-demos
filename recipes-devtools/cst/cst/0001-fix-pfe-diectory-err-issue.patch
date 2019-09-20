@@ -1,0 +1,35 @@
+From b4370216b67f17a4a72694e38fa9c6cb5acb6b8d Mon Sep 17 00:00:00 2001
+From: "mengkun.chen" <mengkun.chen@nxp.com>
+Date: Fri, 20 Sep 2019 14:09:58 +0800
+Subject: [PATCH] fix pfe diectory err issue
+
+Signed-off-by: mengkun.chen <mengkun.chen@nxp.com>
+---
+ scripts/platforms/ls104x_1012_qspi.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/platforms/ls104x_1012_qspi.sh b/scripts/platforms/ls104x_1012_qspi.sh
+index af1e921..6d8e3d8 100755
+--- a/scripts/platforms/ls104x_1012_qspi.sh
++++ b/scripts/platforms/ls104x_1012_qspi.sh
+@@ -46,7 +46,7 @@ if [ -f bootscript_enforce ]; then
+     ./uni_sign input_files/uni_sign/ls104x_1012/input_initramfs_secure
+ fi
+ 
+-if [ -f $FBDIR/$pfe_fw ]; then
++if [ -f $DEPLOYDIR/$pfe_fw ]; then
+     ./uni_sign input_files/uni_sign/ls104x_1012/input_pfe_secure
+ fi
+ 
+@@ -64,7 +64,7 @@ if [ -f secboot_hdrs_qspiboot.bin ]; then
+     rm secboot_hdrs_qspiboot.bin
+ fi
+ touch secboot_hdrs_qspiboot.bin
+-if [ -f $FBDIR/$pfe_fw ]; then
++if [ -f $DEPLOYDIR/$pfe_fw ]; then
+ dd if=hdr_pfe.out of=secboot_hdrs_qspiboot.bin bs=1K seek=1024
+ fi
+ dd if=hdr_kernel.out of=secboot_hdrs_qspiboot.bin bs=1K seek=2048
+-- 
+2.7.4
+
