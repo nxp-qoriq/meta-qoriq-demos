@@ -7,30 +7,13 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425
 SRC_URI = "file://create_single_boot_image.sh \
     file://memorylayout.cfg \
     file://flash_images.sh \
-    file://ls2088ardb.manifest \
-    file://ls1088ardb-pb.manifest \
-    file://ls1021atwr.manifest \
-    file://ls1028ardb.manifest \
-    file://ls1043ardb.manifest \
-    file://ls1046ardb.manifest \
-    file://ls1012ardb.manifest \
-    file://lx2160ardb.manifest \
-    file://ls1012afrwy.manifest \
-    file://ls1046afrwy.manifest \
-    file://ls1012afrwy/env_bootstrap.img \
-    file://ls1043ardb/env_bootstrap.img \
-    file://ls1012ardb/env_bootstrap.img \
-    file://ls1046ardb/env_bootstrap.img \
-    file://ls1046afrwy/env_bootstrap.img \
-    file://ls1088ardb-pb/env_bootstrap.img \
-    file://ls2088ardb/env_bootstrap.img \
-    file://lx2160ardb/env_bootstrap.img \
-    file://ls1028ardb/env_bootstrap.img \
+    file://${MACHINE}.manifest \
+    file://${MACHINE}/env_bootstrap.img \
 "
 
 inherit deploy
 
-#set ROOTFS_IMAGE = "fsl-image-mfgtool" in local.conf
+#set ROOTFS_IMAGE = "fsl-image-edgescale" in local.conf
 #set KERNEL_ITS = "kernel-all.its" in local.conf
 ITB_IMAGE = "fsl-image-kernelitb"
 ITB_IMAGE_ls1021atwr = "virtual/kernel"
@@ -77,8 +60,8 @@ do_deploy () {
  
     for d in ${BOOT_TYPE}; do
         ./create_single_boot_image.sh -m ${MACHINE} -t ${d} -d . -s ${DEPLOY_DIR_IMAGE} -e ${ENCAP} -i ${IMA_EVM} -o ${SECURE}
-        cp ${DEPLOY_DIR_IMAGE}/firmware*.img ${DEPLOY_DIR_IMAGE}/single-bootstrap
-        cp ${DEPLOY_DIR_IMAGE}/bl2*.pbl ${DEPLOY_DIR_IMAGE}/single-bootstrap
+        cp ${DEPLOY_DIR_IMAGE}/firmware*.img ${DEPLOY_DIR_IMAGE}/single-bootstrap/
+        cp ${DEPLOY_DIR_IMAGE}/bl2*.pbl ${DEPLOY_DIR_IMAGE}/single-bootstrap/
     done
     if [ -e ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/${MACHINE}_boot.scr ]; then
     	cp ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/${MACHINE}_boot.scr ${DEPLOY_DIR_IMAGE}

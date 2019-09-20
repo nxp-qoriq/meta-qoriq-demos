@@ -16,7 +16,7 @@ Usage()
         -s        deploy dir
         -e        encap
         -i        ima-evm
-        -o   secure
+        -o        secure
 "
     exit
 }
@@ -124,6 +124,11 @@ secure_sign_image() {
 
 
     cp $TOPDIR/secboot_hdrs_${BOOTTYPE}boot.bin $DEPLOYDIR/secboot_hdrs/
+    if [  $MACHINE  = ls1028ardb ] ; then
+          cp $TOPDIR/secboot_hdrs.bin $DEPLOYDIR/secboot_hdrs/secboot_hdrs_${BOOTTYPE}boot.bin
+    else
+          cp $TOPDIR/secboot_hdrs_${BOOTTYPE}boot.bin $DEPLOYDIR/secboot_hdrs/
+    fi
     cp $TOPDIR/hdr_dtb.out $DEPLOYDIR/secboot_hdrs/
     cp $TOPDIR/hdr_linux.out $DEPLOYDIR/secboot_hdrs/
     if [  $MACHINE  = ls1012afrwy ] ; then
@@ -267,18 +272,20 @@ generate_qoriq_composite_firmware() {
         	fi
 	fi
     fi
-    uboot_env=env_bootstrap.img
-    # Bootloader environment
-    if [ $MACHINE = ls1012afrwy ]; then
-    	dd if=$uboot_env of=$fwimg bs=1k seek=1856
-    else
-    	if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-		dd if=$uboot_env of=$fwimg bs=1K seek=$sd_bootloader_env_offset
-    	else
-		val=`expr $(echo $(($nor_bootloader_env_offset))) / 1024`
-		dd if=$uboot_env of=$fwimg bs=1K seek=$val
-    	fi
-    fi	
+    if [ "$SECURE" != "true" ]; then
+          uboot_env=env_bootstrap.img
+          # Bootloader environment
+          if [ $MACHINE = ls1012afrwy ]; then
+                dd if=$uboot_env of=$fwimg bs=1k seek=1856
+          else
+                if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+                      dd if=$uboot_env of=$fwimg bs=1K seek=$sd_bootloader_env_offset
+                else
+                      val=`expr $(echo $(($nor_bootloader_env_offset))) / 1024`
+                      dd if=$uboot_env of=$fwimg bs=1K seek=$val
+                fi
+          fi
+    fi
     # secure boot headers
     if [ "$secureboot_headers" != null -a -n "$secureboot_headers" ] && [ "$SECURE" = "true" ] ; then
         if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
