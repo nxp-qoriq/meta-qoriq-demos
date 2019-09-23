@@ -8,10 +8,10 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-lts.git;protocol=ssh;nobranch=1 \
+SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-lts.git;protocol=ssh;branch=linux-4.19 \
     file://0001-lsdk.config-fix-issue-for-unset-ramdisk-size-in-LSDK.patch \
 "
-SRCREV = "6d69b980c31075f376680618aff68a9065766aee"
+SRCREV = "${AUTOREV}"
 
 SRC_URI += " file://0001-Makfefile-add-cflags.patch \
 "
