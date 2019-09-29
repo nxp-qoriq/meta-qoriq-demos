@@ -2,13 +2,13 @@
 
 # BSD LICENSE
 #
-# Copyright 2017 NXP
+# Copyright 2017~2019 NXP
 #
 #
 
 Usage()
 {
-    echo "Usage: $0 -m MACHINE  -t BOOTTYPE -d TOPDIR -s DEPLOYDIR -e ENCAP -i IMA_EVM -o SECURE\
+    echo "Usage: $0 -m MACHINE  -t BOOTTYPE -d TOPDIR -s DEPLOYDIR -e ENCAP -i IMA_EVM -o SECURE -f MFT\
 
         -m        machine name
         -t        boottype
@@ -17,12 +17,13 @@ Usage()
         -e        encap
         -i        ima-evm
         -o        secure
+        -f        mft
 "
     exit
 }
 
 # get command options
-while getopts "m:t:d:s:e:i:o:" flag
+while getopts "m:t:d:s:e:i:o:f:" flag
 do
         case $flag in
                 m) MACHINE="$OPTARG";
@@ -45,6 +46,9 @@ do
                    ;;
                 o) SECURE="$OPTARG";
                    echo "secure : $SECURE";
+                   ;;
+                f) MFT="$OPTARG";
+                   echo "mft : $MFT";
                    ;;
                 ?) Usage;
                    exit 3
@@ -312,7 +316,7 @@ generate_qoriq_composite_firmware() {
     fi
      # fuse provisioning in case CONFIG_FUSE_PROVISIONING is enabled
     if [ "$CONFIG_FUSE_PROVISIONING" = "y" ]; then
-        if [ "$SECURE" = "ture" ]; then
+        if [ "$SECURE" = "true" ]; then
             fuse_header=build/firmware/atf/$1/fuse_fip_sec.bin
         else
             fuse_header=build/firmware/atf/$1/fuse_fip.bin
@@ -397,16 +401,17 @@ generate_qoriq_composite_firmware() {
             dd if=$DEPLOYDIR/$dpaa2_mc_dpc of=$fwimg bs=512 seek=$sd_dpaa2_mc_dpc_offset
         fi
     fi
-    # linux kernel image
-    if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
-        val=`expr $(echo $(($nor_kernel_offset))) / 1024`
-        if [ $BOOTTYPE != qspi -o $BOOTTYPE != ls1021atwr ]; then
-           dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=1K seek=$val
-        fi
-    elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-        dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=512 seek=$sd_kernel_offset
+    if [ "$MFT" != "true" ]; then
+	    # linux kernel image
+	    if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+		val=`expr $(echo $(($nor_kernel_offset))) / 1024`
+		if [ $BOOTTYPE != qspi -o $BOOTTYPE != ls1021atwr ]; then
+		   dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=1K seek=$val
+		fi
+	    elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+		dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=512 seek=$sd_kernel_offset
+	    fi
     fi
-   
     if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
         tail -c +4097 $fwimg > $fwimg.img && rm $fwimg
     else

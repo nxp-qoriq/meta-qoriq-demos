@@ -5,6 +5,7 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384
 inherit update-rc.d
 
 SIG = "${@bb.utils.contains('DISTRO_FEATURES', 'singleboot', 'true', 'false', d)}"
+MFT = "${@bb.utils.contains('DISTRO_FEATURES', 'mft', 'true', 'false', d)}"
 DEPENDS_append = " update-rc.d-native"
 SRC_URI = "file://merge"
 S = "${WORKDIR}"
@@ -16,6 +17,9 @@ do_install () {
     install -d ${D}/${MERGED_DST}
     install -d ${D}${sysconfdir}/init.d
     install -d ${D}${sysconfdir}/rcS.d
+    if [ "${MFT}" = "true" ];then
+        sed -i "13,16c  \ \t /usr/bin/af-agent -host \$(ip route show | grep default | awk '{print \$3}')\n \t exit 0" ${WORKDIR}/merge/eds-init
+    fi
     install -m 0755    ${WORKDIR}/merge/eds-init       ${D}${sysconfdir}/init.d
     #ln -s   ${D}${sysconfdir}/init.d/openil-init ${D}${sysconfdir}/rcS.d/S60openil-init
     update-rc.d -r ${D} eds-init  start 30 5 .

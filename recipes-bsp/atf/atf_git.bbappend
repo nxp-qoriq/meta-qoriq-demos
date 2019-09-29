@@ -4,6 +4,7 @@ UEFI_QSPIBOOT_ls1046ardb ?= "LS1046ARDB_EFI_QSPIBOOT.fd"
 
 DEPENDS_append_qoriq-arm64 += "${@bb.utils.contains('DISTRO_FEATURES', 'optee', 'optee-os-qoriq', '', d)}"
 SIG = "${@bb.utils.contains('DISTRO_FEATURES', 'singleboot', 'true', 'false', d)}"
+MFT = "${@bb.utils.contains('DISTRO_FEATURES', 'mft', 'true', 'false', d)}"
 DEPENDS_append_lx2160a += "ddr-phy"
 chassistype_ls1046afrwy = "ls104x_1012"
 
@@ -14,7 +15,7 @@ do_compile() {
     cp -r ${RECIPE_SYSROOT}/usr/include/openssl/*   ${S}/include/tools_share/openssl
     ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/gen_keys 1024
 
-    if [ "${BUILD_FUSE}" = "true" ]; then
+    if [ "${BUILD_FUSE}" = "true" -o "${MFT}" = "true" ]; then
        ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/gen_fusescr ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/input_files/gen_fusescr/${chassistype}/input_fuse_file
        fuseopt="fip_fuse FUSE_PROG=1 FUSE_PROV_FILE=fuse_scr.bin"
     fi
@@ -75,7 +76,7 @@ do_compile() {
                 fi
                 cp -r ${S}/build/${PLATFORM}/release/bl2_${d}*.pbl ${S}
                 cp -r ${S}/build/${PLATFORM}/release/fip.bin ${S}
-                if [ "${BUILD_FUSE}" = "true" ]; then
+                if [ "${BUILD_FUSE}" = "true" -o "${MFT}" = "true" ]; then
                     cp -f ${S}/build/${PLATFORM}/release/fuse_fip.bin ${S}
                 fi
 

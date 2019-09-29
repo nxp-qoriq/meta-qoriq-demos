@@ -9,6 +9,7 @@ SRC_URI = "file://create_single_boot_image.sh \
     file://flash_images.sh \
     file://${MACHINE}.manifest \
     file://${MACHINE}/env_bootstrap.img \
+    file://mft-environment/env_bootstrap.img \
 "
 
 inherit deploy
@@ -36,6 +37,7 @@ BOOT_TYPE_ls1021atwr ?= "qspi nor"
 IMA_EVM = "${@bb.utils.contains('DISTRO_FEATURES', 'ima-evm', 'true', 'false', d)}"
 ENCAP = "${@bb.utils.contains('DISTRO_FEATURES', 'encap', 'true', 'false', d)}"
 SECURE = "${@bb.utils.contains('DISTRO_FEATURES', 'secure', 'true', 'false', d)}"
+MFT = "${@bb.utils.contains('DISTRO_FEATURES', 'mft', 'true', 'false', d)}"
 
 S = "${WORKDIR}"
 
@@ -50,7 +52,11 @@ do_deploy () {
     cd ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst
     cp ${S}/*.sh ./
     cp ${S}/${MACHINE}.manifest ./
-    cp ${S}/${MACHINE}/env_bootstrap.img ./
+    if [ ${MFT} != "true" ]; then
+        cp ${S}/${MACHINE}/env_bootstrap.img ./
+    else
+        cp ${S}/mft-environment/env_bootstrap.img ./
+    fi
     cp ${S}/memorylayout.cfg ./
     if [ ${SECURE} = "true" ]; then
         if [ ! -f ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/srk.pri ]; then
@@ -59,7 +65,7 @@ do_deploy () {
     fi
  
     for d in ${BOOT_TYPE}; do
-        ./create_single_boot_image.sh -m ${MACHINE} -t ${d} -d . -s ${DEPLOY_DIR_IMAGE} -e ${ENCAP} -i ${IMA_EVM} -o ${SECURE}
+        ./create_single_boot_image.sh -m ${MACHINE} -t ${d} -d . -s ${DEPLOY_DIR_IMAGE} -e ${ENCAP} -i ${IMA_EVM} -o ${SECURE} -f ${MFT}
         cp ${DEPLOY_DIR_IMAGE}/firmware*.img ${DEPLOY_DIR_IMAGE}/single-bootstrap/
         cp ${DEPLOY_DIR_IMAGE}/bl2*.pbl ${DEPLOY_DIR_IMAGE}/single-bootstrap/
     done
