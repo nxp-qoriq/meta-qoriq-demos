@@ -48,7 +48,7 @@ do_compile[noexec] = "1"
 
 do_deploy () {
     rm -rf ${DEPLOY_DIR_IMAGE}/single-bootstrap
-    install -d ${DEPLOY_DIR_IMAGE}/single-bootstrap
+    install -d ${DEPLOY_DIR_IMAGE}/single-source-bootstrap
     cd ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst
     cp ${S}/*.sh ./
     cp ${S}/${MACHINE}.manifest ./
@@ -66,8 +66,8 @@ do_deploy () {
  
     for d in ${BOOT_TYPE}; do
         ./create_single_boot_image.sh -m ${MACHINE} -t ${d} -d . -s ${DEPLOY_DIR_IMAGE} -e ${ENCAP} -i ${IMA_EVM} -o ${SECURE} -f ${MFT}
-        cp ${DEPLOY_DIR_IMAGE}/firmware*.img ${DEPLOY_DIR_IMAGE}/single-bootstrap/
-        cp ${DEPLOY_DIR_IMAGE}/bl2*.pbl ${DEPLOY_DIR_IMAGE}/single-bootstrap/
+        cp ${DEPLOY_DIR_IMAGE}/firmware*.img ${DEPLOY_DIR_IMAGE}/single-source-bootstrap/
+        cp ${DEPLOY_DIR_IMAGE}/bl2*.pbl ${DEPLOY_DIR_IMAGE}/single-source-bootstrap/
     done
     if [ -e ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/${MACHINE}_boot.scr ]; then
     	cp ${RECIPE_SYSROOT_NATIVE}/usr/bin/cst/${MACHINE}_boot.scr ${DEPLOY_DIR_IMAGE}

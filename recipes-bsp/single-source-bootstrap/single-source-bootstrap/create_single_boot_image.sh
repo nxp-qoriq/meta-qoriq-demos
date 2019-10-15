@@ -210,6 +210,12 @@ generate_qoriq_composite_firmware() {
       bootloaderimg=`eval echo '${'"uboot"'_'"$BOOTTYPE"'boot_sec}'`
       bl2img=`eval echo '${'"atf_bl2_""$BOOTTYPE"'_sec}'`
       fipimg=`eval echo '${'"atf_fip_""uboot"'_sec}'`
+    elif [ "$MFT" = "true" ]; then
+      fwimg=$DEPLOYDIR/firmware_${MACHINE}_uboot_${BOOTTYPE}boot_mft
+      rcwimg=`eval echo '${'"rcw_""$BOOTTYPE"'}'`
+      bootloaderimg=`eval echo '${'"uboot"'_'"$BOOTTYPE"'boot}'`
+      bl2img=`eval echo '${'"atf_bl2_""$BOOTTYPE"'}'`
+      fipimg=`eval echo '${'"atf_fip_""uboot"'}'`
     else
       fwimg=$DEPLOYDIR/firmware_${MACHINE}_uboot_${BOOTTYPE}boot
       rcwimg=`eval echo '${'"rcw_""$BOOTTYPE"'}'`
