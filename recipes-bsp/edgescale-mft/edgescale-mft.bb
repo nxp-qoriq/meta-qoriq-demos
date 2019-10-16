@@ -11,8 +11,7 @@ DEPENDS = "\
            openssl \
           "
 
-GO_IMPORT = "bitbucket.sw.nxp.com/~nxa22939/edgescale-mft-agent"
-
+GO_IMPORT = "github.com/NXP/edgescale-mft-agent"
 S = "${WORKDIR}/git"
 inherit go
 inherit goarch

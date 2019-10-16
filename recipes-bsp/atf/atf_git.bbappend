@@ -1,4 +1,3 @@
-SRC_URI = "git://bitbucket.sw.nxp.com/gitam/atf.git;protocol=ssh;nobranch=1"
 SRCREV = "85e98b945172118c55f0cea9c1f655b4307e6fab"
 UEFI_QSPIBOOT_ls1046ardb ?= "LS1046ARDB_EFI_QSPIBOOT.fd"
 

@@ -1,8 +1,8 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/files:"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/dash/dash-uboot.git;protocol=ssh;nobranch=1 \
+SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/u-boot;nobranch=1 \
 "
-SRCREV = "82ea9841a80ddabbfa283c35f9ee42a03a6fa654"
+SRCREV = "ce862bb2d2aa3b2a69bc580c57dce67d84ac1b99"
 
 LS_PATCHES = "file://0001-Add-OTA-support.patch"
 

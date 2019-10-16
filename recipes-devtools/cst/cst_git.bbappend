@@ -1,8 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
-SRC_URI = "git://bitbucket.sw.nxp.com/sdk/cst.git;protocol=ssh;nobranch=1 \
-           file://0001-fix-pfe-diectory-err-issue.patch \
-"
+SRC_URI_append = "file://0001-fix-pfe-diectory-err-issue.patch"
 SRCREV = "bfad3c99074e8bb010685e17ce90c8898298bba6"
 
 SUMMARY = "utility for security boot"
