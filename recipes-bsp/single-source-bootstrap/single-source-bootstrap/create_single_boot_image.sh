@@ -65,35 +65,11 @@ secure_sign_image() {
 
     cp $TOPDIR/$uboot_scr $TOPDIR/bootscript && echo "Copying bootscript"
     cp $DEPLOYDIR/$device_tree $TOPDIR/uImage.dtb && echo "Copying dtb"
-
-    if [ $MACHINE = ls1021atwr ]; then
-        cp $DEPLOYDIR/$kernel_img $TOPDIR/uImage.bin && echo "Copying kernel"
-        cp $DEPLOYDIR/$kernel_itb $TOPDIR/kernel.itb && echo "Copying kernel_itb"
-    else
-        cp $DEPLOYDIR/$kernel_img $TOPDIR/uImage.bin && echo "Copying kernel"
-        cp $DEPLOYDIR/$kernel_itb $TOPDIR/kernel.itb && echo "Copying kernel_itb"
-    fi
+    cp $DEPLOYDIR/$kernel_img $TOPDIR/uImage.bin && echo "Copying kernel"
+    cp $DEPLOYDIR/$kernel_itb $TOPDIR/kernel.itb && echo "Copying kernel_itb"
     rcwimg_sec=`eval echo '${'"rcw_""$BOOTTYPE"'_sec}'`
     rcwimg_nonsec=`eval echo '${'"rcw_""$BOOTTYPE"'}'`
 
-    if [ $MACHINE = ls1021atwr ]; then
-        ubootimg_sec=`eval echo '${'"uboot_""$BOOTTYPE"'boot_sec}'`
-        if [ -z "$ubootimg_sec" -o "$ubootimg_sec" = "null" ]; then
-            echo $BOOTTYPE boot on $1 for secureboot unsupported
-            exit
-        fi
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi ]; then
-            cp $DEPLOYDIR/$ubootimg_sec $TOPDIR/u-boot-dtb.bin
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-            if [ "$uboot_sdboot_sec" = "null" -o -z "$uboot_sdboot_sec" ]; then
-                echo $BOOTTYPE boot on  for secureboot unsupported
-                exit
-            fi
-            cp $DEPLOYDIR/$uboot_sdboot_sec $TOPDIR/u-boot-with-spl-pbl.bin
-            cp $DEPLOYDIR/$uboot_spl $TOPDIR/u-boot-spl.bin
-            cp $DEPLOYDIR/$uboot_dtb $TOPDIR/u-boot-dtb.bin
-        fi
-    fi
 
     if [ -f $DEPLOYDIR/$pfe_fw ] ; then
         cp $DEPLOYDIR/$pfe_fw $TOPDIR/pfe.itb && echo "Copying PFE"
@@ -114,28 +90,28 @@ secure_sign_image() {
     if [ ! -d  $DEPLOYDIR/secboot_hdrs/ ] ; then
         mkdir -p  $DEPLOYDIR/secboot_hdrs/
     fi
-    if [ $BOOTTYPE = nand ] ; then
+    if [ "$BOOTTYPE" = "nand" ] ; then
         . $nand_script
-    elif [ $BOOTTYPE = sd ] ; then
+    elif [ "$BOOTTYPE" = "sd" ] ; then
         . $sd_script
-    elif [ $BOOTTYPE = nor ] ; then
+    elif [ "$BOOTTYPE" = "nor" ] ; then
         . $nor_script
-    elif [ $BOOTTYPE = qspi ] ; then
+    elif [ "$BOOTTYPE" = "qspi" ] ; then
         . $qspi_script
-    elif [ $BOOTTYPE = xspi ] ; then
+    elif [ "$BOOTTYPE" = "xspi" ] ; then
         . $xspi_script
     fi
 
 
     cp $TOPDIR/secboot_hdrs_${BOOTTYPE}boot.bin $DEPLOYDIR/secboot_hdrs/
-    if [  $MACHINE  = ls1028ardb ] ; then
+    if [  "$MACHINE"  = "ls1028ardb" ] ; then
           cp $TOPDIR/secboot_hdrs.bin $DEPLOYDIR/secboot_hdrs/secboot_hdrs_${BOOTTYPE}boot.bin
     else
           cp $TOPDIR/secboot_hdrs_${BOOTTYPE}boot.bin $DEPLOYDIR/secboot_hdrs/
     fi
     cp $TOPDIR/hdr_dtb.out $DEPLOYDIR/secboot_hdrs/
     cp $TOPDIR/hdr_linux.out $DEPLOYDIR/secboot_hdrs/
-    if [  $MACHINE  = ls1012afrwy ] ; then
+    if [  "$MACHINE"  = "ls1012afrwy" ] ; then
         cp $TOPDIR/hdr_kernel.out $DEPLOYDIR/secboot_hdrs/
     fi
     cp $TOPDIR/hdr_bs.out $DEPLOYDIR/secboot_hdrs/hdr_${1}_bs.out
@@ -160,9 +136,9 @@ generate_distro_bootscr() {
     if [ -n "$uboot_scr" -a "$uboot_scr" != "null" ] ; then
         if [ -n "$securevalidate" ]; then
             if [ "$ENCAP" = "true" ] ; then
-                if [ $bootscript_dec != null ] ; then
+                if [ "$bootscript_dec" != "null" ] ; then
                     echo $securevalidate_dec > $bootscript_dec.tmp
-                    if [ $MACHINE = ls1043ardb -o $MACHINE = ls1046ardb ]; then
+                    if [ "$MACHINE" = "ls1043ardb" -o "$MACHINE" = "ls1046ardb" ]; then
                         echo $distroboot | sed 's/vmlinuz/vmlinuz.v8/g' >> $bootscript_dec.tmp
                     else
                         echo $distroboot >> $bootscript_dec.tmp
@@ -172,7 +148,7 @@ generate_distro_bootscr() {
                 fi
                 echo $securevalidate_enc > $uboot_scr.tmp
             elif [ "$IMA_EVM" = "true" ] ; then
-                 if [ $bootscript_enforce != null ] ; then
+                 if [ "$bootscript_enforce" != "null" ] ; then
                      echo $securevalidate_enforce > $bootscript_enforce.tmp
                      echo $distroboot_ima >> $bootscript_enforce.tmp
                      mkimage -A arm64 -O linux -T script -C none -a 0 -e 0  -n "boot.scr" \
@@ -227,96 +203,81 @@ generate_qoriq_composite_firmware() {
         rm -f $fwimg
     fi
     secureboot_headers=`eval echo '${'"secureboot_headers_""$BOOTTYPE"'}'`
-    if [ $MACHINE = ls1021atwr ]; then
-        # for machine which doesn't support ATF
-        if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-            # rcw and uboot/uefi in single image
-            dd if=$DEPLOYDIR/$bootloaderimg of=$fwimg bs=512 seek=$sd_rcw_bootloader_offset
-        else
-            # program rcw
-            if [ -z "$rcwimg" ]; then echo ${BOOTTYPE}boot on is not unsupported!; exit; fi
-            dd if=$DEPLOYDIR/$rcwimg of=$fwimg bs=1K seek=0
-            # program u-boot image
-            val=`expr $(echo $(($nor_bootloader_offset))) / 1024`
-            dd if=$DEPLOYDIR/$bootloaderimg of=$fwimg bs=1K seek=$val
-        fi
+    # ATF BL2 image
+    if [ "$MACHINE" = "ls1012afrwy" ]; then
+	    if [ "$2" = "sd" -o "$2" = "emmc" ]; then
+		    dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=512 seek=$sd2_rcw_offset
+	    else
+		    dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=1K seek=0
+		    cp -r $DEPLOYDIR/$bl2img $DEPLOYDIR/bl2_${BOOTTYPE}_${MACHINE}.pbl
+	    fi
     else
-        # ATF BL2 image
-	if [ $MACHINE = ls1012afrwy ]; then
-		if [ $2 = sd -o $2 = emmc ]; then
-			dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=512 seek=$sd2_rcw_offset
-		else
-			dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=1K seek=0
-			cp -r $DEPLOYDIR/$bl2img $DEPLOYDIR/bl2_${BOOTTYPE}_${MACHINE}.pbl
-		fi
-	else
-        	if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-            		dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=512 seek=$sd_rcw_bootloader_offset
-        	else
-            		dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=1K seek=0
-	    		echo $DEPLOYDIR/$bl2img
-	    		cp -r $DEPLOYDIR/$bl2img $DEPLOYDIR/bl2_${BOOTTYPE}_${MACHINE}.pbl
-        	fi
-	fi
+	    if [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
+		    dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=512 seek=$sd_rcw_bootloader_offset
+	    else
+		    dd if=$DEPLOYDIR/$bl2img of=$fwimg bs=1K seek=0
+		    echo $DEPLOYDIR/$bl2img
+		    cp -r $DEPLOYDIR/$bl2img $DEPLOYDIR/bl2_${BOOTTYPE}_${MACHINE}.pbl
+	    fi
+    fi
 	
-	# Program Ethernet firmware,  e.g. PFE on LS1012A-FRWY
-	if [ $MACHINE = ls1012afrwy ]; then
-	        if [ "$pfe_fw" != "null" -a -n "$pfe_fw" ]; then
-			if [ $2 = nor -o $2 = qspi -o $2 = xspi -o $2 = nand ]; then
-				val=`expr $(echo $(($nor2_eth_firmware_offset))) / 1024`
-				dd if=$DEPLOYDIR/$pfe_fw of=$fwimg bs=1K seek=$val
-			elif [ $2 = sd -o $2 = emmc ]; then
-				dd if=$DEPLOYDIR/$pfe_fw of=$fwimg bs=512 seek=$sd2_eth_firmware_offset
-			fi
-		fi
-	fi
-        # ATF FIP image
-	if [ $MACHINE = ls1012afrwy ]; then
-	   	dd if=$DEPLOYDIR/$fipimg of=$fwimg bs=1k seek=384
-	else
-        	if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-            		dd if=$DEPLOYDIR/$fipimg of=$fwimg bs=512 seek=$sd_bootloader_offset
-        	else
-          		val=`expr $(echo $(($nor_bootloader_offset))) / 1024`
-           		dd if=$DEPLOYDIR/$fipimg of=$fwimg bs=1K seek=$val
-        	fi
-	fi
+    # Program Ethernet firmware,  e.g. PFE on LS1012A-FRWY
+    if [ "$MACHINE" = "ls1012afrwy" ]; then
+	    if [ "$pfe_fw" != "null" -a -n "$pfe_fw" ]; then
+		    if [ "$2" = "nor" -o "$2" = "qspi" -o "$2" = "xspi" -o "$2" = "nand" ]; then
+			    val=`expr $(echo $(($nor2_eth_firmware_offset))) / 1024`
+			    dd if=$DEPLOYDIR/$pfe_fw of=$fwimg bs=1K seek=$val
+		    elif [ "$2" = "sd" -o "$2" = "emmc" ]; then
+			    dd if=$DEPLOYDIR/$pfe_fw of=$fwimg bs=512 seek=$sd2_eth_firmware_offset
+		    fi
+	    fi
+    fi
+    # ATF FIP image
+    if [ "$MACHINE" = "ls1012afrwy" ]; then
+	    dd if=$DEPLOYDIR/$fipimg of=$fwimg bs=1k seek=384
+    else
+	    if [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
+		    dd if=$DEPLOYDIR/$fipimg of=$fwimg bs=512 seek=$sd_bootloader_offset
+	    else
+		    val=`expr $(echo $(($nor_bootloader_offset))) / 1024`
+		    dd if=$DEPLOYDIR/$fipimg of=$fwimg bs=1K seek=$val
+	    fi
     fi
     if [ "$SECURE" != "true" ]; then
-          uboot_env=env_bootstrap.img
-          # Bootloader environment
-          if [ $MACHINE = ls1012afrwy ]; then
-                dd if=$uboot_env of=$fwimg bs=1k seek=1856
-          else
-                if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-                      dd if=$uboot_env of=$fwimg bs=1K seek=$sd_bootloader_env_offset
-                else
-                      val=`expr $(echo $(($nor_bootloader_env_offset))) / 1024`
-                      dd if=$uboot_env of=$fwimg bs=1K seek=$val
-                fi
-          fi
+	    uboot_env=env_bootstrap.img
+	    # Bootloader environment
+	    if [ "$MACHINE" = "ls1012afrwy" ]; then
+		    dd if=$uboot_env of=$fwimg bs=1k seek=1856
+	    else
+		    if [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
+			    dd if=$uboot_env of=$fwimg bs=512 seek=$sd_bootloader_env_offset
+		    else
+			    val=`expr $(echo $(($nor_bootloader_env_offset))) / 1024`
+			    dd if=$uboot_env of=$fwimg bs=1K seek=$val
+		    fi
+	    fi
     fi
     # secure boot headers
     if [ "$secureboot_headers" != null -a -n "$secureboot_headers" ] && [ "$SECURE" = "true" ] ; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_secureboot_headers_offset))) / 1024`
             dd if=$DEPLOYDIR/$secureboot_headers of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$secureboot_headers of=$fwimg bs=512 seek=$sd_secureboot_headers_offset
         fi
     fi
 
     # DDR PHY firmware
-    if [ $MACHINE = lx2160ardb ]; then
+    if [ "$MACHINE" = "lx2160ardb" ]; then
         if [ "$SECURE" = "true" ]; then
 	    ddrphyfw=$ddr_phy_fw_sec
 	else
 	    ddrphyfw=$ddr_phy_fw
         fi
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_ddr_phy_fw_offset))) / 1024`
             dd if=$DEPLOYDIR/$ddrphyfw of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$ddrphyfw of=$fwimg bs=512 seek=$sd_ddr_phy_fw_offset
         fi
     fi
@@ -327,39 +288,39 @@ generate_qoriq_composite_firmware() {
         else
             fuse_header=build/firmware/atf/$1/fuse_fip.bin
         fi
-        if [ $2 = nor -o $2 = qspi -o $2 = xspi -o $2 = nand ]; then
+        if [ "$2" = "nor" -o "$2" = "qspi" -o "$2" = "xspi" -o "$2" = "nand" ]; then
             val=`expr $(echo $(($nor_fuse_headers_offset))) / 1024`
             dd if=$DEPLOYDIR/$fuse_header of=$fwimg bs=1K seek=$val
-        elif [ $2 = sd -o $2 = emmc ]; then
+        elif [ "$2" = "sd" -o "$2" = "emmc" ]; then
             dd if=$DEPLOYDIR/$fuse_header of=$fwimg bs=512 seek=$sd_fuse_headers_offset
         fi
     fi
 
     # DPAA1 FMan ucode firmware
     if [ "$fman_ucode" != "null" -a -n "$fman_ucode" ]; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_fman_ucode_offset))) / 1024`
             dd if=$DEPLOYDIR/$fman_ucode of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$fman_ucode of=$fwimg bs=512 seek=$sd_fman_ucode_offset
         fi
     fi
     # QE/uQE firmware
     if [ "$qe_firmware" != "null" -a -n "$qe_firmware" ] ; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_qe_firmware_offset))) / 1024`
             dd if=$DEPLOYDIR/$qe_firmware of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$qe_firmware of=$fwimg bs=512 seek=$sd_qe_firmware_offset
         fi
     fi
 
     # ethernet phy firmware
     if [ "$phy_firmware" != "null" -a -n "$phy_firmware" ] ; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_phy_firmware_offset))) / 1024`
             dd if=$DEPLOYDIR/$phy_firmware of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$phy_firmware of=$fwimg bs=512 seek=$sd_phy_firmware_offset
         fi
     fi
@@ -367,10 +328,10 @@ generate_qoriq_composite_firmware() {
     if [ ! -f $DEPLOYDIR/flash_images.scr ] ; then
         mkimage -T script -C none -d flash_images.sh $DEPLOYDIR/flash_images.scr
     fi
-    if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+    if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
         val=`expr $(echo $(($nor_uboot_scr_offset))) / 1024`
         dd if=$DEPLOYDIR/flash_images.scr of=$fwimg bs=1K seek=$val
-    elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+    elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
         dd if=$DEPLOYDIR/flash_images.scr of=$fwimg bs=512 seek=$sd_uboot_scr_offset
     fi
 
@@ -381,44 +342,42 @@ generate_qoriq_composite_firmware() {
         fwbin=$DEPLOYDIR/$pfe_fw
     fi
     if [ -n "$fwbin" ]; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             	val=`expr $(echo $(($nor_dpaa2_mc_fw_offset))) / 1024`
             	dd if=$fwbin of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             	dd if=$fwbin of=$fwimg bs=512 seek=$sd_dpaa2_mc_fw_offset
         fi
     fi
 
     # DPAA2 DPL firmware
     if [ "$dpaa2_mc_dpl" != "null" -a -n "$dpaa2_mc_dpl" ] ; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_dpaa2_mc_dpl_offset))) / 1024`
             dd if=$DEPLOYDIR/$dpaa2_mc_dpl of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$dpaa2_mc_dpl of=$fwimg bs=512 seek=$sd_dpaa2_mc_dpl_offset
         fi
     fi
     # DPAA2 DPC firmware
     if [ "$dpaa2_mc_dpc" != "null" -a -n "$dpaa2_mc_dpc" ] ; then
-        if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
+        if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
             val=`expr $(echo $(($nor_dpaa2_mc_dpc_offset))) / 1024`
             dd if=$DEPLOYDIR/$dpaa2_mc_dpc of=$fwimg bs=1K seek=$val
-        elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+        elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
             dd if=$DEPLOYDIR/$dpaa2_mc_dpc of=$fwimg bs=512 seek=$sd_dpaa2_mc_dpc_offset
         fi
     fi
     if [ "$MFT" != "true" ]; then
 	    # linux kernel image
-	    if [ $BOOTTYPE = nor -o $BOOTTYPE = qspi -o $BOOTTYPE = xspi -o $BOOTTYPE = nand ]; then
-		val=`expr $(echo $(($nor_kernel_offset))) / 1024`
-		if [ $BOOTTYPE != qspi -o $BOOTTYPE != ls1021atwr ]; then
-		   dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=1K seek=$val
-		fi
-	    elif [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
-		dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=512 seek=$sd_kernel_offset
+	    if [ "$BOOTTYPE" = "nor" -o "$BOOTTYPE" = "qspi" -o "$BOOTTYPE" = "xspi" -o "$BOOTTYPE" = "nand" ]; then
+	        val=`expr $(echo $(($nor_kernel_offset))) / 1024`
+	        dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=1K seek=$val
+	    elif [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
+	        dd if=$DEPLOYDIR/${kernel_itb} of=$fwimg bs=512 seek=$sd_kernel_offset
 	    fi
     fi
-    if [ $BOOTTYPE = sd -o $BOOTTYPE = emmc ]; then
+    if [ "$BOOTTYPE" = "sd" -o "$BOOTTYPE" = "emmc" ]; then
         tail -c +4097 $fwimg > $fwimg.img && rm $fwimg
     else
         mv $fwimg $fwimg.img
