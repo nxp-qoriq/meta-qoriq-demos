@@ -49,7 +49,7 @@ do_compile() {
         go run parse_config.go
 
         export GOARCH="${TARGET_GOARCH}"
-        go build --ldflags="-w -s" -o ${GOARCH}/bootstrap-enroll bootstrap-enroll.go config_tmp.go
+        go build --ldflags="-w -s" -buildmode=pie -o ${GOARCH}/bootstrap-enroll bootstrap-enroll.go config_tmp.go
 }
 
 do_install() {
