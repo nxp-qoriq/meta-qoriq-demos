@@ -10,7 +10,7 @@ SRC_URI = "\
         git://github.com/go-yaml/yaml.git;nobranch=1;destsuffix=git/src/gopkg.in/yaml.v2;name=yaml \
         git://github.com/laurentluce/est-client-go;nobranch=1;destsuffix=git/src/github.com/laurentluce/est-client-go;name=est-client-go \
         "
-SRCREV = "dcecd79b9d701789903144dd798770d7cbd47db6"
+SRCREV = "2ef05dc567c95f9f5e79550dfe11fcf4ae42f35b"
 SRCREV_pkcs7 = "8306686428a5fe132eac8cb7c4848af725098bd4"
 SRCREV_yaml = "51d6538a90f86fe93ac480b35f37b2be17fef232"
 SRCREV_est-client-go = "14471c0ce01a9b67577ff1eeb0241bced09d387f"
@@ -18,13 +18,6 @@ SRCREV_est-client-go = "14471c0ce01a9b67577ff1eeb0241bced09d387f"
 S = "${WORKDIR}/git"
 inherit go
 inherit goarch
-
-python () {
-    if bb.utils.contains('DISTRO_FEATURES', 'es-domain', True, False, d):
-        esdomainsuffix = d.getVar("ES_DOMAIN_SUFFIX")
-        if not esdomainsuffix:
-            raise bb.parse.SkipRecipe("Please define ES_DOMAIN_SUFFIX in conf/local.conf")
-}
 
 do_compile() {
         export GOOS="${TARGET_GOOS}"

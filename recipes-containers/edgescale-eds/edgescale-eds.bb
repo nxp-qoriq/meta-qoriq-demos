@@ -17,7 +17,7 @@ SRC_URI = "\
         git://github.com/go-yaml/yaml.git;nobranch=1;destsuffix=git/src/gopkg.in/yaml.v2;name=yaml \
         git://github.com/edgeiot/est-client-go;nobranch=1;destsuffix=git/src/github.com/edgeiot/est-client-go;name=est-client-go \
         "
-SRCREV = "97b65ccea1205aa402bd48830395168d2d916ef4"
+SRCREV = "ac2255239e3e6b113812853be6fdde8c5583de35"
 SRCREV_sys = "cb59ee3660675d463e86971646692ea3e470021c"
 SRCREV_crypto = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 SRCREV_net = "927f97764cc334a6575f4b7a1584a147864d5723"
@@ -45,7 +45,7 @@ PACKAGECONFIG ??= " \
 PACKAGECONFIG[secure] = ",,secure-obj,secure-obj-module"
 PACKAGECONFIG[optee] = ",,optee-client-qoriq"
 
-GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
+GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-edgescale-eds"
 
 S = "${WORKDIR}/git"
 inherit go
@@ -85,15 +85,25 @@ do_install() {
         install -d ${D}/usr/local/edgescale/bin
         install -d ${D}/usr/local/edgescale/conf
 
+        if [ -n "${ES_CERTIFICATE_PATH}" ]; then
+          install -d ${D}/usr/local/share/ca-certificates
+          cp -fr ${ES_CERTIFICATE_PATH}/* ${D}/usr/local/share/ca-certificates
+        fi
+
         cp -r ${S}/import/vendor/cert-agent/cert-agent ${D}/${bindir}
         cp -r ${S}/import/vendor/cert-agent/pkg ${D}/${includedir}/cert-agent/
+        cp -r ${S}/src/${GO_IMPORT}/etc/config.yml ${D}/usr/local/edgescale/conf
         cp -r ${S}/src/${GO_IMPORT}/etc/edgescale-version ${D}/usr/local/edgescale/conf
+
+        if [ -n "${ES_DOMAIN_SUFFIX}" ]; then
+          sed -i "s,api.*,api: https://api.${ES_DOMAIN_SUFFIX}/v1," ${D}/usr/local/edgescale/conf/config.yml
+        fi
 }
 
 do_install_append_imx() {
-    cp -r ${S}/import/vendor/mq-agent/mq-agent ${D}/usr/local/edgescale/bin
-    cp -r ${S}/src/${GO_IMPORT}/startup/*.sh ${D}/usr/local/edgescale/bin
-    cp -r ${S}/src/${GO_IMPORT}/startup/ota-* ${D}/usr/local/edgescale/bin
+        cp -r ${S}/import/vendor/mq-agent/mq-agent ${D}/usr/local/edgescale/bin
+        cp -r ${S}/src/${GO_IMPORT}/startup/*.sh ${D}/usr/local/edgescale/bin
+        cp -r ${S}/src/${GO_IMPORT}/startup/ota-* ${D}/usr/local/edgescale/bin
     
 }
 

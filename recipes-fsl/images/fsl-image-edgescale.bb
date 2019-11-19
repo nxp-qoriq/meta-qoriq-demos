@@ -7,7 +7,6 @@ NXP-specific packages."
 LICENSE = "MIT"
 
 IMA_EVM = "${@bb.utils.contains('DISTRO_FEATURES', 'ima-evm', 'ima-evm', '', d)}"
-ES_DOMAIN = "${@bb.utils.contains('DISTRO_FEATURES', 'es-domain', 'eds-domain', '', d)}"
 
 IMAGE_INSTALL_append = " \
     start-stop-daemon \
@@ -35,7 +34,6 @@ IMAGE_INSTALL_append = " \
     openssl-qoriq-bin \
     rng-tools \
     ${IMA_EVM} \
-    ${ES_DOMAIN} \
 "
 
 IMAGE_INSTALL_append_ls1012a = " \
