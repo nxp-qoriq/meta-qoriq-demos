@@ -104,21 +104,13 @@ download_images(){
 	if [ ! -d ${download_path} ];then
 		mkdir -p ${download_path}
 	fi
-	count=1
-	while [ $count -le 5 ]
-	do
-		wget -O /run/media/mmcblk0p3/updateImages/full_images_default.tgz -c $imageURL
-		if [ $? != 0 ];then
-			((count++))
-			echo "retrying $count times"
-			sleep 5
-		else
-			break
-		fi
-	done
-
-	if [ $count -gt 5 ];then
-		reboot
+	wget -O ${download_path}/full_images_default.tgz -c $imageURL -t 0 -T 300
+	if [ $? != 0 ];then
+		echo "Connection timeout"
+		sleep 5
+		reboot -f
+	else
+		return 0
 	fi
 }
 
