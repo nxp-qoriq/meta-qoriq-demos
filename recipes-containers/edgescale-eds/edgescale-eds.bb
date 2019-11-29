@@ -17,7 +17,7 @@ SRC_URI = "\
         git://github.com/go-yaml/yaml.git;nobranch=1;destsuffix=git/src/gopkg.in/yaml.v2;name=yaml \
         git://github.com/edgeiot/est-client-go;nobranch=1;destsuffix=git/src/github.com/edgeiot/est-client-go;name=est-client-go \
         "
-SRCREV = "ac2255239e3e6b113812853be6fdde8c5583de35"
+SRCREV = "72dc0afa0a7f90ddd091d43953634c6f94e8728f"
 SRCREV_sys = "cb59ee3660675d463e86971646692ea3e470021c"
 SRCREV_crypto = "ff983b9c42bc9fbf91556e191cc8efb585c16908"
 SRCREV_net = "927f97764cc334a6575f4b7a1584a147864d5723"
@@ -45,7 +45,7 @@ PACKAGECONFIG ??= " \
 PACKAGECONFIG[secure] = ",,secure-obj,secure-obj-module"
 PACKAGECONFIG[optee] = ",,optee-client-qoriq"
 
-GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-edgescale-eds"
+GO_IMPORT = "github.com/NXP/qoriq-edgescale-eds"
 
 S = "${WORKDIR}/git"
 inherit go

@@ -3,7 +3,7 @@ HOMEPAGE = "https://github.com/nxp/qoriq-eds-bootstrap.git"
 LICENSE = "NXP-EULA"
 LIC_FILES_CHKSUM = "file://src/${GO_IMPORT}/EULA.txt;md5=ac5425aaed72fb427ef1113a88542f89"
 
-GO_IMPORT = "bitbucket.sw.nxp.com/dcca/qoriq-eds-bootstrap"
+GO_IMPORT = "github.com/NXP/qoriq-eds-bootstrap"
 SRC_URI = "\
         git://${GO_IMPORT}.git;protocol=ssh;nobranch=1 \
         git://github.com/fullsailor/pkcs7.git;nobranch=1;destsuffix=git/src/github.com/fullsailor/pkcs7;name=pkcs7 \
