@@ -36,6 +36,7 @@ do_compile() {
         cd ${S}/import/vendor
         if [ -n "${ES_DOMAIN_SUFFIX}" ]; then
             sed -i "s/edgescale.org/${ES_DOMAIN_SUFFIX}/g" config.yml
+            sed -i "s#cmd :=.*#cmd := \"curl -f https://image.${ES_DOMAIN_SUFFIX}/CA/int.b-est.${ES_DOMAIN_SUFFIX}.rootCA.pem -o /tmp/rootCA.pem\"#" bootstrap-enroll.go
         fi
 
         export GOARCH="${BUILD_GOARCH}"
