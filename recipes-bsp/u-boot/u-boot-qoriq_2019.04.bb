@@ -4,7 +4,7 @@ SRC_URI = "git://source.codeaurora.org/external/qoriq/qoriq-components/u-boot;no
 "
 SRCREV = "ce862bb2d2aa3b2a69bc580c57dce67d84ac1b99"
 
-LS_PATCHES = "file://0001-Add-OTA-support.patch"
+LS_PATCHES = "file://0001-Add-ls1021atwr-OTA-support.patch"
 
 SINGLE_PATCHES = "file://0001-Enable-POLICY_OTA-for-Layerscape-boards.patch"
 
