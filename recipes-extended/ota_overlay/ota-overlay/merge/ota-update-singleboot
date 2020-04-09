@@ -163,7 +163,7 @@ mount_device() {
 
 sd_card_format(){
 	check_disk_capacity
-	flex-installer -i pf -d sd -p 4P=100M:1G:$[($disksize - 2) * 2 / 3]G:-1
+	flex-installer -i pf -d sd -p 4P=100M:2G:$[($disksize - 2) * 2 / 3]G:-1
 	if [ ! -d "/run/media/mmcblk0p3" ];then
 		echo "partition of SD card is not right"
 		exit 1
