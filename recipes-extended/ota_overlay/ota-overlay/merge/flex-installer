@@ -340,10 +340,18 @@ flex_install_distro() {
 	uuid_boot=`lsblk -l --output UUID $bootdev | grep -`
 	uuid_backup=`lsblk -l --output UUID $backupdev | grep -`
 	[ -n "$userpartnum" ] && uuid_user=`lsblk -l --output UUID $userdev | grep -`
-	fstabfile=$syspartition/etc/fstab
-	chmod 666 $fstabfile
+	fstabfile=$syspartition/etc/fstab && chmod 666 $fstabfile
+	bootmountfile=$syspartition/etc/systemd/system/boot.mount
 	echo "/dev/root     /    ext4       errors=remount-ro 0  1" >> $fstabfile
-	echo "UUID=$uuid_boot    /boot      ext4    defaults      0  2" >> $fstabfile
+	if [ -f $bootmountfile ] && grep -q '^What=UUID=PARTUUID' $bootmountfile; then
+	    echo setting PARTUUID for boot partition ...
+	    chmod 666 $bootmountfile
+	    mkdir -p $syspartition/boot
+	    sed -i "s/PARTUUID/$uuid_boot/" $bootmountfile
+	    chmod 644 $bootmountfile
+	else
+	    echo "UUID=$uuid_boot    /boot      ext4    defaults      0  2" >> $fstabfile
+	fi
 	echo "UUID=$uuid_backup    /backup      ext4    defaults      0  2" >> $fstabfile
 	[ -n "$userpartnum" ] && echo "UUID=$uuid_user    /userdata  ext4    defaults   0  2" >> $fstabfile
 	chmod 644 $fstabfile
